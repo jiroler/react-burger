@@ -1,0 +1,27 @@
+.header {
+    background: #1C1C21;
+}
+
+.nav {
+    width: 1240px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav > * {
+    flex: 1;
+}
+
+.left {
+    display: flex;
+    justify-content: flex-start;
+    margin-left: -20px;
+}
+
+.right {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: -20px;
+}
