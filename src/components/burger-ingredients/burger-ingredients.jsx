@@ -1,7 +1,7 @@
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
-import styles from './styles.module.css'
+import styles from './burger-ingredients.module.css'
 import cn from 'classnames'
-import BurgerIngredient from './burger-ingredient'
+import BurgerIngredient from './burger-ingredient/burger-ingredient'
 import { arrayOf } from 'prop-types'
 import { dataItemType } from '../../utils/data'
 

@@ -1,5 +1,5 @@
 import cn from 'classnames'
-import styles from './styles.module.css'
+import styles from './menu-item.module.css'
 
 export default function MenuItem(props) {
 

@@ -1,18 +1,18 @@
 import { Button, ConstructorElement, CurrencyIcon, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components'
-import styles from './styles.module.css'
+import styles from './burger-constructor.module.css'
 import cn from 'classnames'
 import { dataItemType } from '../../utils/data'
 import { arrayOf } from 'prop-types'
 
-export default function BurgerConstructor({ top, bottom, list }) {
+export default function BurgerConstructor({ bun, list }) {
     return (
         <section className='pt-25 pl-4'>
             <ConstructorElement
                 type="top"
                 isLocked={true}
-                text={top.name}
-                price={top.price}
-                thumbnail={top.image}
+                text={[bun.name, '(верх)'].join('\n')}
+                price={bun.price}
+                thumbnail={bun.image}
                 extraClass={cn(styles.dark, 'ml-8 mb-4')}
             />
             <div className={cn(styles.list, 'custom-scroll')}>
@@ -31,9 +31,9 @@ export default function BurgerConstructor({ top, bottom, list }) {
             <ConstructorElement
                 type="bottom"
                 isLocked={true}
-                text={bottom.name}
-                price={bottom.price}
-                thumbnail={bottom.image}
+                text={[bun.name, '(низ)'].join(' ')}
+                price={bun.price}
+                thumbnail={bun.image}
                 extraClass={cn(styles.dark, 'ml-8 mt-4')}
             />
 
@@ -51,7 +51,6 @@ export default function BurgerConstructor({ top, bottom, list }) {
 }
 
 BurgerConstructor.propTypes = {
-    top: dataItemType,
-    bottom: dataItemType,
+    bun: dataItemType,
     list: arrayOf(dataItemType).isRequired
 }

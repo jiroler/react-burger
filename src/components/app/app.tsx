@@ -1,13 +1,12 @@
 
 import { data } from '../../utils/data'
-import AppHeader from '../app-header'
-import BurgerConstructor from '../burger-constructor'
-import BurgerIngredients from '../burger-ingredients'
-import styles from './styles.module.css'
+import AppHeader from '../app-header/app-header'
+import BurgerConstructor from '../burger-constructor/burger-constructor'
+import BurgerIngredients from '../burger-ingredients/burger-ingredients'
+import styles from './app.module.css'
 
 const constructorProps = {
-    top: data[0],
-    bottom: data[data.length - 1],
+    bun: data[0],
     list: data.slice(1, -1)
 }
 
