@@ -1,56 +1,62 @@
-import { Button, ConstructorElement, CurrencyIcon, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components'
 import styles from './burger-constructor.module.css'
 import cn from 'classnames'
-import { dataItemType } from '../../utils/data'
+import { dataItemType } from '../../utils/types'
 import { arrayOf } from 'prop-types'
+import useModal from '../../hooks/use-modal'
+import { useMemo } from 'react'
+import Modal from '../modal/modal'
+import OrderDetails from './order-details/order-details'
+import ConstructorItem from './constructor-item/constructor-item'
+import OrderSummary from './order-summary/order-summary'
 
-export default function BurgerConstructor({ bun, list }) {
+const BurgerConstructor = ({ bun, components }) => {
+    const [isModalVisible, openModal, closeModal] = useModal()
+
+    const modal = useMemo(() => (
+        <Modal handleClose={closeModal}>
+            <OrderDetails/>
+        </Modal>
+    ), [closeModal])
+
     return (
         <section className='pt-25 pl-4'>
-            <ConstructorElement
-                type="top"
-                isLocked={true}
-                text={[bun.name, '(верх)'].join('\n')}
-                price={bun.price}
-                thumbnail={bun.image}
-                extraClass={cn(styles.dark, 'ml-8 mb-4')}
-            />
-            <div className={cn(styles.list, 'custom-scroll')}>
-                {list.map(item => (
-                    <div key={item._id} className={styles.item}>
-                        <DragIcon type="primary" />
-                        <ConstructorElement
-                            text={item.name}
-                            price={item.price}
-                            thumbnail={item.image}
-                            extraClass={styles.dark}
-                        />
-                    </div>
-                ))}
+            <div className={styles.items}>
+                <ConstructorItem type="top"
+                    isLocked
+                    text={bun.name}
+                    price={bun.price}
+                    thumbnail={bun.image}
+                />
+                <div className={cn(styles.components, 'custom-scroll')}>
+                    {components.map((item, index) => (
+                        <div key={index} className={styles.item}>
+                            <ConstructorItem
+                                text={item.name}
+                                price={item.price}
+                                thumbnail={item.image}
+                            />
+                        </div>
+                    ))}
+                </div>
+                <ConstructorItem
+                    type="bottom"
+                    isLocked
+                    text={bun.name}
+                    price={bun.price}
+                    thumbnail={bun.image}
+                />
             </div>
-            <ConstructorElement
-                type="bottom"
-                isLocked={true}
-                text={[bun.name, '(низ)'].join(' ')}
-                price={bun.price}
-                thumbnail={bun.image}
-                extraClass={cn(styles.dark, 'ml-8 mt-4')}
-            />
 
-            <div className={cn(styles.summary, 'mt-10 pr-4')}>
-                <p className="text text_type_digits-medium">
-                    610
-                    <CurrencyIcon type="primary"/>
-                </p>
-                <Button htmlType="button" type="primary" size="medium">
-                    Оформить заказ
-                </Button>
-            </div>
+            <OrderSummary handleOrder={openModal}/>
+
+            {isModalVisible && modal}
         </section>
     )
 }
 
 BurgerConstructor.propTypes = {
     bun: dataItemType,
-    list: arrayOf(dataItemType).isRequired
+    components: arrayOf(dataItemType).isRequired
 }
+
+export default BurgerConstructor

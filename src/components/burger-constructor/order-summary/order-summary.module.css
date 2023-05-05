@@ -1,0 +1,17 @@
+.summary {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 40px;
+}
+
+.summary > p {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.summary > p > svg {
+    width: 36px;
+    height: 36px;
+}

@@ -1,14 +1,4 @@
-.tabs {
-    display: flex;
-}
-
 .ingredients {
     overflow-y: overlay;
     max-height: 720px;
-}
-
-.container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 32px 24px;
 }

@@ -8,3 +8,9 @@
 .main > * {
     flex: 1;
 }
+
+.error {
+    margin: 50px;
+    color: red;
+    text-align: center;
+}

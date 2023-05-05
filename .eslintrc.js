@@ -59,7 +59,7 @@ module.exports = {
         'no-const-assign': 'error',
         'no-constant-condition': ['error', { checkLoops: false }],
         'no-control-regex': 'error',
-        'no-debugger': 'error',
+        // 'no-debugger': 'error',
         'no-delete-var': 'error',
         'no-dupe-args': 'error',
         'no-dupe-class-members': 'error',

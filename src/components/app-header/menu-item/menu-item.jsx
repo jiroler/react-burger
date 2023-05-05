@@ -1,8 +1,8 @@
 import cn from 'classnames'
 import styles from './menu-item.module.css'
+import { bool } from 'prop-types'
 
-export default function MenuItem(props) {
-
+const MenuItem = (props) => {
     const Icon = props.icon
 
     return (
@@ -12,3 +12,9 @@ export default function MenuItem(props) {
         </a>
     )
 }
+
+MenuItem.propTypes = {
+    active: bool
+}
+
+export default MenuItem

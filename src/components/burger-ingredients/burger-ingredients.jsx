@@ -1,40 +1,64 @@
-import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
 import styles from './burger-ingredients.module.css'
 import cn from 'classnames'
-import BurgerIngredient from './burger-ingredient/burger-ingredient'
 import { arrayOf } from 'prop-types'
-import { dataItemType } from '../../utils/data'
+import { dataItemType } from '../../utils/types'
+import useModal from '../../hooks/use-modal'
+import Modal from '../modal/modal'
+import { useCallback, useMemo, useState } from 'react'
+import IngredientDetails from './ingredient-details/ingredient-details'
+import Tabs from './tabs/tabs'
+import TabGroup from './tab-group/tab-group'
 
-export default function BurgerIngredients({ data }) {
+const tabs = [
+    { type: 'bun', name: 'Булки' },
+    { type: 'sauce', name: 'Соусы' },
+    { type: 'main', name: 'Начинка' }
+]
+
+const BurgerIngredients = ({ data }) => {
+    const [isModalVisible, openModal, closeModal] = useModal()
+    const [modalItem, setModalItem] = useState(null)
+
+    const handleIngredientClick = useCallback(item => {
+        if (! item) return
+        setModalItem(item)
+        openModal()
+    }, [openModal])
+
+    const tabGroups = useMemo(() => {
+        return tabs.reduce((acc, tab) => {
+            acc.push({
+                ...tab,
+                items: data.filter(item => item.type === tab.type)
+            })
+            return acc
+        }, [])
+    }, [data])
+
+    const modal = useMemo(() => (
+        modalItem &&
+            <Modal title="Детали ингредиента" handleClose={closeModal}>
+                <IngredientDetails item={modalItem}/>
+            </Modal>
+    ), [modalItem, closeModal])
 
     return (
         <section className='pt-10'>
             <h1 className='text text_type_main-large'>Соберите бургер</h1>
-            <div className={cn(styles.tabs, 'mt-5 mb-10')}>
-                <Tab active>Булки</Tab>
-                <Tab>Соусы</Tab>
-                <Tab>Начинка</Tab>
-            </div>
+            <Tabs items={tabs}/>
             <div className={cn(styles.ingredients, 'custom-scroll')}>
-                <p className='text text_type_main-medium'>Булки</p>
-                <div className={cn(styles.container, 'p-4 pt-6 pb-10')}>
-                    {data.filter(item => item.type === 'bun').map(item => (
-                        <BurgerIngredient key={item._id} item={item} count={1}/>
-                    ))}
-                </div>
-                <p className='text text_type_main-medium'>Соусы</p>
-                <div className={cn(styles.container, 'p-4 pt-6 pb-10')}>
-                    {data.filter(item => item.type === 'sauce').map(item => (
-                        <BurgerIngredient key={item._id} item={item} count={2}/>
-                    ))}
-                </div>
-                <p className='text text_type_main-medium'>Начинка</p>
-                <div className={cn(styles.container, 'p-4 pt-6 pb-10')}>
-                    {data.filter(item => item.type === 'main').map(item => (
-                        <BurgerIngredient key={item._id} item={item} count={3}/>
-                    ))}
-                </div>
+                {tabGroups.map(group => (
+                    <TabGroup
+                        key={group.type}
+                        name={group.name}
+                        type={group.type}
+                        items={group.items}
+                        handleIngredientClick={handleIngredientClick}
+                    />
+                ))}
             </div>
+
+            {isModalVisible && modal}
         </section>
     )
 }
@@ -42,3 +66,5 @@ export default function BurgerIngredients({ data }) {
 BurgerIngredients.propTypes = {
     data: arrayOf(dataItemType).isRequired
 }
+
+export default BurgerIngredients
