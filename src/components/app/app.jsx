@@ -1,32 +1,22 @@
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import AppHeader from '../app-header/app-header'
 import BurgerConstructor from '../burger-constructor/burger-constructor'
 import BurgerIngredients from '../burger-ingredients/burger-ingredients'
 import styles from './app.module.css'
+import useFetch from '../../hooks/use-fetch'
 
 const url = 'https://norma.nomoreparties.space/api/ingredients'
 
 const App = () => {
 
-    const [state, setState] = useState({
-        data: [],
-        isLoaded: false,
-        hasError: false
-    })
-
-    useEffect(() => {
-        fetch(url)
-            .then(response => response.json())
-            .then(json => setState({ ...state, isLoaded: true, data: json.data }))
-            .catch(() => setState({ ...state, isLoaded: false, hasError: true }))
-    }, [])
+    const { data, isLoaded, error } = useFetch(url)
 
     const fakeOrder = useMemo(() => {
         const getRandomItem = (items) => items[Math.floor(Math.random() * items.length)]
 
-        const allBuns = state.data.filter(item => item.type === 'bun')
-        const allComponents = state.data.filter(item => item.type !== 'bun')
+        const allBuns = data.filter(item => item.type === 'bun')
+        const allComponents = data.filter(item => item.type !== 'bun')
         const fakeComponents = []
 
         while (fakeComponents.length < 6) {
@@ -37,19 +27,19 @@ const App = () => {
             bun: getRandomItem(allBuns),
             components: fakeComponents
         }
-    }, [state.data])
+    }, [data])
 
     return (
         <>
             <AppHeader/>
 
-            {state.hasError &&
-                <h1 className={styles.error}>Произошла ошибка загрузки данных</h1>
+            {error &&
+                <h1 className={styles.error}>{error}</h1>
             }
 
-            {state.isLoaded &&
+            {isLoaded &&
                 <main className={styles.main}>
-                    <BurgerIngredients data={state.data}/>
+                    <BurgerIngredients data={data}/>
                     <BurgerConstructor {...fakeOrder}/>
                 </main>
             }
