@@ -1,16 +1,16 @@
 import styles from './burger-constructor.module.css'
 import cn from 'classnames'
-import { dataItemType } from '../../utils/types'
-import { arrayOf } from 'prop-types'
 import useModal from '../../hooks/use-modal'
-import { useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 import Modal from '../modal/modal'
 import OrderDetails from './order-details/order-details'
 import ConstructorItem from './constructor-item/constructor-item'
 import OrderSummary from './order-summary/order-summary'
+import { ConstructorContext } from '../../services/constructorContext'
 
-const BurgerConstructor = ({ bun, components }) => {
+const BurgerConstructor = () => {
     const [isModalVisible, openModal, closeModal] = useModal()
+    const { constructorState: { bun, components } } = useContext(ConstructorContext)
 
     const modal = useMemo(() => (
         <Modal handleClose={closeModal}>
@@ -21,12 +21,12 @@ const BurgerConstructor = ({ bun, components }) => {
     return (
         <section className='pt-25 pl-4'>
             <div className={styles.items}>
-                <ConstructorItem type="top"
+                {bun && <ConstructorItem type="top"
                     isLocked
                     text={bun.name}
                     price={bun.price}
                     thumbnail={bun.image}
-                />
+                />}
                 <div className={cn(styles.components, 'custom-scroll')}>
                     {components.map((item, index) => (
                         <div key={index} className={styles.item}>
@@ -38,13 +38,13 @@ const BurgerConstructor = ({ bun, components }) => {
                         </div>
                     ))}
                 </div>
-                <ConstructorItem
+                {bun && <ConstructorItem
                     type="bottom"
                     isLocked
                     text={bun.name}
                     price={bun.price}
                     thumbnail={bun.image}
-                />
+                />}
             </div>
 
             <OrderSummary handleOrder={openModal}/>
@@ -52,11 +52,6 @@ const BurgerConstructor = ({ bun, components }) => {
             {isModalVisible && modal}
         </section>
     )
-}
-
-BurgerConstructor.propTypes = {
-    bun: dataItemType,
-    components: arrayOf(dataItemType).isRequired
 }
 
 export default BurgerConstructor
