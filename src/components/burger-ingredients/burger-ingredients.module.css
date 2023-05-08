@@ -1,0 +1,4 @@
+.ingredients {
+    overflow-y: overlay;
+    max-height: 720px;
+}

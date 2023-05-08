@@ -1,8 +1,9 @@
 import { BurgerIcon, ListIcon, Logo, ProfileIcon } from '@ya.praktikum/react-developer-burger-ui-components'
-import styles from './styles.module.css'
-import MenuItem from './menu-item'
+import styles from './app-header.module.css'
+import MenuItem from './menu-item/menu-item'
+import { memo } from 'react'
 
-export default function AppHeader() {
+const AppHeader = memo(() => {
     return (
         <header className={styles.header}>
             <nav className={styles.nav}>
@@ -21,4 +22,6 @@ export default function AppHeader() {
             </nav>
         </header>
     )
-}
+})
+
+export default AppHeader

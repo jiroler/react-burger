@@ -1,21 +1,3 @@
-.dark {
-    background: #1C1C21;
-}
-
-.list {
-    overflow-y: overlay;
-    max-height: 464px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
 .summary {
     display: flex;
     justify-content: flex-end;
