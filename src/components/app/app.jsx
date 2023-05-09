@@ -4,8 +4,9 @@ import AppHeader from '../app-header/app-header'
 import BurgerConstructor from '../burger-constructor/burger-constructor'
 import BurgerIngredients from '../burger-ingredients/burger-ingredients'
 import styles from './app.module.css'
-import useFetch from '../../hooks/use-fetch'
-import { ConstructorContext } from '../../services/constructorContext'
+import cn from 'classnames'
+import useFetchIngredients from '../../hooks/use-fetch-ingredients'
+import { ConstructorContext } from '../../services/constructor-context'
 
 const url = 'https://norma.nomoreparties.space/api/ingredients'
 
@@ -35,7 +36,7 @@ const constructorReducer = (state, action) => {
 
 const App = () => {
 
-    const { data, isLoaded, error } = useFetch(url)
+    const { data, isLoaded, error } = useFetchIngredients(url)
     const [constructorState, constructorDispatch] = useReducer(constructorReducer, {
         bun: null,
         components: [],
@@ -57,7 +58,7 @@ const App = () => {
             <AppHeader/>
 
             {error &&
-                <h1 className={styles.error}>{error}</h1>
+                <h1 className={cn(styles.error, 'text text_type_main-large')}>{error}</h1>
             }
 
             {isLoaded &&

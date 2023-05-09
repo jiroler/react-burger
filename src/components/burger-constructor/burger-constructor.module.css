@@ -12,3 +12,8 @@
     flex-direction: column;
     gap: 16px;
 }
+
+.error {
+    color: red;
+    text-align: right;
+}

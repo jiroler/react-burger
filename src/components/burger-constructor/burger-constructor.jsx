@@ -6,17 +6,32 @@ import Modal from '../modal/modal'
 import OrderDetails from './order-details/order-details'
 import ConstructorItem from './constructor-item/constructor-item'
 import OrderSummary from './order-summary/order-summary'
-import { ConstructorContext } from '../../services/constructorContext'
+import { ConstructorContext } from '../../services/constructor-context'
+import useFetchOrder from '../../hooks/use-fetch-order'
+
+const url = 'https://norma.nomoreparties.space/api/orders'
 
 const BurgerConstructor = () => {
     const [isModalVisible, openModal, closeModal] = useModal()
     const { constructorState: { bun, components } } = useContext(ConstructorContext)
 
-    const modal = useMemo(() => (
-        <Modal handleClose={closeModal}>
-            <OrderDetails/>
-        </Modal>
-    ), [closeModal])
+    const ingredients = components.map(item => item._id).concat(bun?._id || [])
+    const { data, isLoading, error, fetchData } = useFetchOrder(url, ingredients, openModal)
+
+    const handleOrder = async () => {
+        ! isLoading && fetchData()
+    }
+
+    const modal = useMemo(() => {
+
+        if (! data) return null
+
+        return (
+            <Modal handleClose={closeModal}>
+                <OrderDetails number={data.order?.number}/>
+            </Modal>
+        )
+    }, [closeModal, data])
 
     return (
         <section className='pt-25 pl-4'>
@@ -47,7 +62,9 @@ const BurgerConstructor = () => {
                 />}
             </div>
 
-            <OrderSummary handleOrder={openModal}/>
+            <OrderSummary handleOrder={handleOrder}/>
+
+            {error && <p className={cn(styles.error, 'text text_type_main-medium p-4')}>{error}</p>}
 
             {isModalVisible && modal}
         </section>

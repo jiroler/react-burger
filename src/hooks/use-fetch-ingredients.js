@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-export default function useFetch(url) {
+export default function useFetchIngredients(url) {
 
     const [state, setState] = useState({
         data: [],

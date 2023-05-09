@@ -3,7 +3,7 @@ import styles from './order-summary.module.css'
 import cn from 'classnames'
 import { Button, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components'
 import { func } from 'prop-types'
-import { ConstructorContext } from '../../../services/constructorContext'
+import { ConstructorContext } from '../../../services/constructor-context'
 
 const OrderSummary = memo(({ handleOrder }) => {
 
