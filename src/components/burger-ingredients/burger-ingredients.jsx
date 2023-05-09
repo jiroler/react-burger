@@ -1,7 +1,5 @@
 import styles from './burger-ingredients.module.css'
 import cn from 'classnames'
-import { arrayOf } from 'prop-types'
-import { dataItemType } from '../../utils/types'
 import useModal from '../../hooks/use-modal'
 import Modal from '../modal/modal'
 import { useCallback, useMemo, useState } from 'react'
@@ -15,7 +13,7 @@ const tabs = [
     { type: 'main', name: 'Начинка' }
 ]
 
-const BurgerIngredients = ({ data }) => {
+const BurgerIngredients = () => {
     const [isModalVisible, openModal, closeModal] = useModal()
     const [modalItem, setModalItem] = useState(null)
 
@@ -24,16 +22,6 @@ const BurgerIngredients = ({ data }) => {
         setModalItem(item)
         openModal()
     }, [openModal])
-
-    const tabGroups = useMemo(() => {
-        return tabs.reduce((acc, tab) => {
-            acc.push({
-                ...tab,
-                items: data.filter(item => item.type === tab.type)
-            })
-            return acc
-        }, [])
-    }, [data])
 
     const modal = useMemo(() => (
         modalItem &&
@@ -47,12 +35,11 @@ const BurgerIngredients = ({ data }) => {
             <h1 className='text text_type_main-large'>Соберите бургер</h1>
             <Tabs items={tabs}/>
             <div className={cn(styles.ingredients, 'custom-scroll')}>
-                {tabGroups.map(group => (
+                {tabs.map(tab => (
                     <TabGroup
-                        key={group.type}
-                        name={group.name}
-                        type={group.type}
-                        items={group.items}
+                        key={tab.type}
+                        name={tab.name}
+                        type={tab.type}
                         handleIngredientClick={handleIngredientClick}
                     />
                 ))}
@@ -61,10 +48,6 @@ const BurgerIngredients = ({ data }) => {
             {isModalVisible && modal}
         </section>
     )
-}
-
-BurgerIngredients.propTypes = {
-    data: arrayOf(dataItemType).isRequired
 }
 
 export default BurgerIngredients

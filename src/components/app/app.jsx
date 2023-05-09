@@ -7,6 +7,7 @@ import styles from './app.module.css'
 import cn from 'classnames'
 import useFetchIngredients from '../../hooks/use-fetch-ingredients'
 import { ConstructorContext } from '../../services/constructor-context'
+import { IngredientsContext } from '../../services/ingredients-context'
 
 const url = 'https://norma.nomoreparties.space/api/ingredients'
 
@@ -67,7 +68,9 @@ const App = () => {
 
             {isLoaded &&
                 <main className={styles.main}>
-                    <BurgerIngredients data={data}/>
+                    <IngredientsContext.Provider value={data}>
+                        <BurgerIngredients/>
+                    </IngredientsContext.Provider>
                     <ConstructorContext.Provider value={contextValue}>
                         <BurgerConstructor/>
                     </ConstructorContext.Provider>
