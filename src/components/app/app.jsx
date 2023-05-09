@@ -1,5 +1,5 @@
 
-import { useEffect, useReducer } from 'react'
+import { useEffect, useMemo, useReducer } from 'react'
 import AppHeader from '../app-header/app-header'
 import BurgerConstructor from '../burger-constructor/burger-constructor'
 import BurgerIngredients from '../burger-ingredients/burger-ingredients'
@@ -43,6 +43,10 @@ const App = () => {
         totalPrice: 0
     })
 
+    const contextValue = useMemo(() => {
+        return { constructorState, constructorDispatch }
+    }, [constructorState, constructorDispatch])
+
     useEffect(() => {
         if (! data.length) return
 
@@ -64,7 +68,7 @@ const App = () => {
             {isLoaded &&
                 <main className={styles.main}>
                     <BurgerIngredients data={data}/>
-                    <ConstructorContext.Provider value={{ constructorState, constructorDispatch }}>
+                    <ConstructorContext.Provider value={contextValue}>
                         <BurgerConstructor/>
                     </ConstructorContext.Provider>
                 </main>

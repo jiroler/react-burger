@@ -32,5 +32,5 @@ export default function useFetchOrder(url, ingredients, onLoad) {
         }
     }, [url, ingredients])
 
-    return { data: state.data, isLoaded: state.isLoaded, error: state.error, fetchData }
+    return { data: state.data, isLoading: state.isLoading, error: state.error, fetchData }
 }
