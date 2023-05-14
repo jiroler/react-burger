@@ -4,13 +4,30 @@ import './index.css'
 
 import reportWebVitals from './reportWebVitals'
 import App from './components/app/app'
+import { configureStore } from '@reduxjs/toolkit'
+import ingredients from './services/reducers/ingredients'
+import burgerConstructor from './services/reducers/burger-constructor'
+import ingredientDetails from './services/reducers/ingredient-details'
+import order from './services/reducers/order'
+import { Provider } from 'react-redux'
+
+const store = configureStore({
+    reducer: {
+        ingredients,
+        burgerConstructor,
+        ingredientDetails,
+        order
+    }
+})
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 )
 root.render(
     <React.StrictMode>
-        <App />
+        <Provider store={store}>
+            <App />
+        </Provider>
     </React.StrictMode>
 )
 
