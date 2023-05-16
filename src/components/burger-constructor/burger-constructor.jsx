@@ -1,37 +1,41 @@
 import styles from './burger-constructor.module.css'
 import cn from 'classnames'
 import useModal from '../../hooks/use-modal'
-import { useContext, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import Modal from '../modal/modal'
 import OrderDetails from './order-details/order-details'
 import ConstructorItem from './constructor-item/constructor-item'
 import OrderSummary from './order-summary/order-summary'
-import { ConstructorContext } from '../../services/constructor-context'
-import useFetchOrder from '../../hooks/use-fetch-order'
+import { useDispatch, useSelector } from 'react-redux'
+import { makeOrder } from '../../services/slices/order'
 
-const url = 'https://norma.nomoreparties.space/api/orders'
+const url = '/orders'
 
 const BurgerConstructor = () => {
+    const dispatch = useDispatch()
+    const { bun, components } = useSelector(store => store.burgerConstructor)
     const [isModalVisible, openModal, closeModal] = useModal()
-    const { constructorState: { bun, components } } = useContext(ConstructorContext)
+    const { number, error } = useSelector(store => store.order)
 
     const ingredients = components.map(item => item._id).concat(bun?._id || [])
-    const { data, isLoading, error, fetchData } = useFetchOrder(url, ingredients, openModal)
 
-    const handleOrder = async () => {
-        ! isLoading && fetchData()
+    const handleOrder = () => {
+        dispatch(makeOrder({ url, ingredients }))
     }
 
-    const modal = useMemo(() => {
+    useEffect(() => {
+        number && openModal()
+    }, [number, openModal])
 
-        if (! data) return null
+    const modal = useMemo(() => {
+        if (! number) return null
 
         return (
             <Modal handleClose={closeModal}>
-                <OrderDetails number={data.order?.number}/>
+                <OrderDetails number={number}/>
             </Modal>
         )
-    }, [closeModal, data])
+    }, [closeModal, number])
 
     return (
         <section className='pt-25 pl-4'>
@@ -41,14 +45,16 @@ const BurgerConstructor = () => {
                     text={bun.name}
                     price={bun.price}
                     thumbnail={bun.image}
+                    uuid={bun.uuid}
                 />}
                 <div className={cn(styles.components, 'custom-scroll')}>
-                    {components.map((item, index) => (
-                        <div key={index} className={styles.item}>
+                    {components.map(item => (
+                        <div key={item.uuid} className={styles.item}>
                             <ConstructorItem
                                 text={item.name}
                                 price={item.price}
                                 thumbnail={item.image}
+                                uuid={item.uuid}
                             />
                         </div>
                     ))}
@@ -59,6 +65,7 @@ const BurgerConstructor = () => {
                     text={bun.name}
                     price={bun.price}
                     thumbnail={bun.image}
+                    uuid={bun.uuid}
                 />}
             </div>
 

@@ -1,62 +1,33 @@
 
-import { useEffect, useMemo, useReducer } from 'react'
+import { useEffect } from 'react'
 import AppHeader from '../app-header/app-header'
 import BurgerConstructor from '../burger-constructor/burger-constructor'
 import BurgerIngredients from '../burger-ingredients/burger-ingredients'
 import styles from './app.module.css'
 import cn from 'classnames'
-import useFetchIngredients from '../../hooks/use-fetch-ingredients'
-import { ConstructorContext } from '../../services/constructor-context'
-import { IngredientsContext } from '../../services/ingredients-context'
+import { useDispatch, useSelector } from 'react-redux'
+import { getIngredients } from '../../services/slices/ingredients'
+import { addIngredientToConstructor } from '../../services/slices/burger-constructor'
 
-const url = 'https://norma.nomoreparties.space/api/ingredients'
-
-const constructorReducer = (state, action) => {
-    const updatedState = {
-        bun: state.bun,
-        components: [...state.components],
-        totalPrice: state.totalPrice
-    }
-
-    switch (action.type) {
-        case 'add':
-            if (action.payload.type === 'bun') {
-                if (state.bun !== null) return state
-                updatedState.bun = action.payload
-                updatedState.totalPrice += action.payload.price * 2
-            } else {
-                updatedState.components.push(action.payload)
-                updatedState.totalPrice += action.payload.price
-            }
-            return updatedState
-        default:
-            throw new Error('Unexpected constructor action')
-    }
-
-}
+const url = '/ingredients'
 
 const App = () => {
-
-    const { data, isLoaded, error } = useFetchIngredients(url)
-    const [constructorState, constructorDispatch] = useReducer(constructorReducer, {
-        bun: null,
-        components: [],
-        totalPrice: 0
-    })
-
-    const contextValue = useMemo(() => {
-        return { constructorState, constructorDispatch }
-    }, [constructorState, constructorDispatch])
+    const dispatch = useDispatch()
+    const { items, isPending, error } = useSelector(store => store.ingredients)
 
     useEffect(() => {
-        if (! data.length) return
+        dispatch(getIngredients({ url }))
+    }, [dispatch])
+
+    useEffect(() => {
+        if (! items.length) return
 
         const getRandomItem = (items) => items[Math.floor(Math.random() * items.length)]
 
-        for (let i = 0; i < 10; i ++) {
-            constructorDispatch({ type: 'add', payload: getRandomItem(data) })
+        for (let i = 0; i < 6; i ++) {
+            dispatch(addIngredientToConstructor({ item: getRandomItem(items) }))
         }
-    }, [data])
+    }, [dispatch, items])
 
     return (
         <>
@@ -65,15 +36,12 @@ const App = () => {
             {error &&
                 <h1 className={cn(styles.error, 'text text_type_main-large')}>{error}</h1>
             }
+            {isPending && <p>Загрузка #todo</p> }
 
-            {isLoaded &&
+            {items.length > 0 &&
                 <main className={styles.main}>
-                    <IngredientsContext.Provider value={data}>
-                        <BurgerIngredients/>
-                    </IngredientsContext.Provider>
-                    <ConstructorContext.Provider value={contextValue}>
-                        <BurgerConstructor/>
-                    </ConstructorContext.Provider>
+                    <BurgerIngredients/>
+                    <BurgerConstructor/>
                 </main>
             }
         </>

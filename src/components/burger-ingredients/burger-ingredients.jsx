@@ -1,11 +1,12 @@
 import styles from './burger-ingredients.module.css'
 import cn from 'classnames'
-import useModal from '../../hooks/use-modal'
 import Modal from '../modal/modal'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import IngredientDetails from './ingredient-details/ingredient-details'
 import Tabs from './tabs/tabs'
 import TabGroup from './tab-group/tab-group'
+import { useDispatch, useSelector } from 'react-redux'
+import { clearIngredientDetails, setIngredientDetails } from '../../services/slices/ingredient-details'
 
 const tabs = [
     { type: 'bun', name: 'Булки' },
@@ -14,15 +15,18 @@ const tabs = [
 ]
 
 const BurgerIngredients = () => {
-    const [isModalVisible, openModal, closeModal] = useModal()
-    const [modalItem, setModalItem] = useState(null)
     const [activeTab, setActiveTab] = useState('bun')
 
+    const dispatch = useDispatch()
+    const modalItem = useSelector(store => store.ingredientDetails.item)
+
+    const closeModal = useCallback(() => {
+        dispatch(clearIngredientDetails())
+    }, [dispatch])
+
     const handleIngredientClick = useCallback(item => {
-        if (! item) return
-        setModalItem(item)
-        openModal()
-    }, [openModal])
+        dispatch(setIngredientDetails({ item }))
+    }, [dispatch])
 
     const modal = useMemo(() => (
         modalItem &&
@@ -86,7 +90,7 @@ const BurgerIngredients = () => {
                 ))}
             </div>
 
-            {isModalVisible && modal}
+            {modal}
         </section>
     )
 }

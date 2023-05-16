@@ -1,13 +1,12 @@
-import { forwardRef, memo, useContext } from 'react'
+import { forwardRef, memo } from 'react'
 import styles from './tab-group.module.css'
 import cn from 'classnames'
 import BurgerIngredient from '../burger-ingredient/burger-ingredient'
-import { IngredientsContext } from '../../../services/ingredients-context'
 import { func, string } from 'prop-types'
+import { useSelector } from 'react-redux'
 
 const TabGroup = memo(forwardRef(({ name, type, handleIngredientClick }, titleRef) => {
-
-    const items = useContext(IngredientsContext).filter(item => item.type === type)
+    const items = useSelector(store => store.ingredients.items.filter(item => item.type === type))
 
     return (
         <>

@@ -1,13 +1,13 @@
-import { memo, useContext } from 'react'
+import { memo } from 'react'
 import styles from './order-summary.module.css'
 import cn from 'classnames'
 import { Button, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components'
 import { func } from 'prop-types'
-import { ConstructorContext } from '../../../services/constructor-context'
+import { useSelector } from 'react-redux'
 
 const OrderSummary = memo(({ handleOrder }) => {
 
-    const { constructorState: { totalPrice } } = useContext(ConstructorContext)
+    const totalPrice = useSelector(store => store.burgerConstructor.totalPrice)
 
     return (
         <div className={cn(styles.summary, 'mt-10 pr-4')}>
