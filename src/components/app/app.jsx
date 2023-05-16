@@ -25,9 +25,11 @@ const App = () => {
             <AppHeader/>
 
             {error &&
-                <h1 className={cn(styles.error, 'text text_type_main-large')}>{error}</h1>
+                <h1 className={cn(styles.info, styles.error, 'text text_type_main-large')}>{error}</h1>
             }
-            {isPending && <p>Загрузка #todo</p> }
+            {isPending &&
+                <h1 className={cn(styles.info, 'text text_type_main-large')}>Загрузка...</h1>
+            }
 
             {items.length > 0 &&
                 <main className={styles.main}>

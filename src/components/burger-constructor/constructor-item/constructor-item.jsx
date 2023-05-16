@@ -2,10 +2,11 @@ import { memo } from 'react'
 import styles from './constructor-item.module.css'
 import cn from 'classnames'
 import { ConstructorElement, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components'
-import { bool, number, string } from 'prop-types'
+import { bool, func, number, string } from 'prop-types'
 import { useDispatch } from 'react-redux'
 import { moveComponent, removeComponent } from '../../../services/slices/burger-constructor'
 import { useDrag, useDrop } from 'react-dnd'
+import { constructorItemType } from '../../../utils/types'
 
 const textSuffixes = {
     top: ' (верх)',
@@ -62,11 +63,11 @@ const ConstructorItem = memo(({ type, isLocked, item, originalIndex, findIndex }
 })
 
 ConstructorItem.propTypes = {
-    text: string.isRequired,
-    price: number.isRequired,
-    thumbnail: string.isRequired,
     type: string,
-    isLocked: bool
+    isLocked: bool,
+    item: constructorItemType.isRequired,
+    originalIndex: number,
+    findIndex: func
 }
 
 export default ConstructorItem

@@ -1,8 +1,8 @@
 import { Counter, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components'
 import styles from './burger-ingredient.module.css'
 import cn from 'classnames'
-import { func, number } from 'prop-types'
-import { dataItemType } from '../../../utils/types'
+import { func } from 'prop-types'
+import { ingredientItemType } from '../../../utils/types'
 import { memo } from 'react'
 import { useDrag } from 'react-dnd'
 
@@ -36,8 +36,7 @@ const BurgerIngredient = memo(({ item, handleClick }) => {
 
 BurgerIngredient.propTypes = {
     handleClick: func.isRequired,
-    item: dataItemType,
-    count: number
+    item: ingredientItemType
 }
 
 export default BurgerIngredient
