@@ -16,7 +16,7 @@ const burgerConstructorSlice = createSlice({
                 if (item.type === 'bun') {
                     state.bun = item
                 } else {
-                    state.components.unshift(item)
+                    state.components.push(item)
                 }
             },
             prepare: (payload) => {
@@ -27,19 +27,21 @@ const burgerConstructorSlice = createSlice({
                 return { payload }
             }
         },
-        removeIngredientFromConstructor: (state, action) => {
-            const removingItem = action.payload.item
+        removeComponentFromConstructor: (state, action) => {
+            state.components = state.components.filter(item => item.uuid !== action.payload.item.uuid)
+        },
+        moveComponent: (state, action) => {
+            const { uuid, index } = action.payload
+            const originalIndex = state.components.findIndex(item => item.uuid === uuid)
+            const component = state.components[originalIndex]
 
-            if (removingItem.type === 'bun') {
-                state.bun = null
-            } else {
-                state.components = state.components.filter(item => item.uuid !== removingItem.uuid)
-            }
+            state.components.splice(originalIndex, 1)
+            state.components.splice(index, 0, component)
         }
     }
 })
 
-const { addIngredientToConstructor, removeIngredientFromConstructor } = burgerConstructorSlice.actions
+const { addIngredientToConstructor, removeComponentFromConstructor } = burgerConstructorSlice.actions
 
 export const addIngredient = ({ item }) => (dispatch, getState) => {
     const bun = getState().burgerConstructor.bun
@@ -61,9 +63,10 @@ export const addIngredient = ({ item }) => (dispatch, getState) => {
     dispatch(incrementIngredient({ id: item._id }))
 }
 
-export const removeIngredient = ({ item }) => dispatch => {
-    dispatch(removeIngredientFromConstructor({ item }))
+export const removeComponent = ({ item }) => dispatch => {
+    dispatch(removeComponentFromConstructor({ item }))
     dispatch(decrementIngredient({ id: item._id }))
 }
 
+export const { moveComponent } = burgerConstructorSlice.actions
 export default burgerConstructorSlice.reducer

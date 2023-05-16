@@ -1,7 +1,7 @@
 import styles from './burger-constructor.module.css'
 import cn from 'classnames'
 import useModal from '../../hooks/use-modal'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import Modal from '../modal/modal'
 import OrderDetails from './order-details/order-details'
 import ConstructorItem from './constructor-item/constructor-item'
@@ -46,6 +46,10 @@ const BurgerConstructor = () => {
         }
     })
 
+    const findIndex = useCallback(uuid => {
+        return components.findIndex(item => item.uuid === uuid)
+    }, [components])
+
     return (
         <section className='pt-25 pl-4'>
             <div ref={dropTarget} className={cn(
@@ -59,10 +63,8 @@ const BurgerConstructor = () => {
                     item={bun}
                 />}
                 <div className={cn(styles.components, 'custom-scroll')}>
-                    {components.map(item => (
-                        <div key={item.uuid} className={styles.item}>
-                            <ConstructorItem item={item}/>
-                        </div>
+                    {components.map((item, index) => (
+                        <ConstructorItem key={item.uuid} item={item} originalIndex={index} findIndex={findIndex}/>
                     ))}
                 </div>
                 {bun && <ConstructorItem

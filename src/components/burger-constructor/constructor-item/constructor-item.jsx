@@ -4,22 +4,49 @@ import cn from 'classnames'
 import { ConstructorElement, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components'
 import { bool, number, string } from 'prop-types'
 import { useDispatch } from 'react-redux'
-import { removeIngredient } from '../../../services/slices/burger-constructor'
+import { moveComponent, removeComponent } from '../../../services/slices/burger-constructor'
+import { useDrag, useDrop } from 'react-dnd'
 
 const textSuffixes = {
     top: ' (верх)',
     bottom: ' (низ)'
 }
 
-const ConstructorItem = memo(({ type, isLocked, item }) => {
+const ConstructorItem = memo(({ type, isLocked, item, originalIndex, findIndex }) => {
     const dispatch = useDispatch()
     const handleRemove = () => {
         if (isLocked) return
-        dispatch(removeIngredient({ item }))
+        dispatch(removeComponent({ item }))
     }
 
+    const [{ isDragging }, dragRef] = useDrag(() => ({
+        type: 'component',
+        item: { uuid: item.uuid, originalIndex },
+        collect: (monitor) => ({
+            isDragging: monitor.isDragging()
+        }),
+        end: ({ uuid: droppedUuid, originalIndex }, monitor) => {
+            if (! monitor.didDrop()) {
+                dispatch(moveComponent({ uuid: droppedUuid, index: originalIndex }))
+            }
+        }
+    }), [item.uuid, originalIndex, dispatch])
+
+    const [, dropRef] = useDrop(() => ({
+        accept: 'component',
+        hover({ uuid: draggedUuid }) {
+            if (draggedUuid !== item.uuid) {
+                const overIndex = findIndex(item.uuid)
+                dispatch(moveComponent({ uuid: draggedUuid, index: overIndex }))
+            }
+        }
+    }), [findIndex, dispatch])
+
     return (
-        <div className={styles.item}>
+        <div
+            ref={node => ! isLocked && dragRef(dropRef(node))}
+            className={cn(styles.item, { [styles.dragging]: isDragging })}
+        >
             {! isLocked && <DragIcon type="primary" />}
             <ConstructorElement
                 type={type}
