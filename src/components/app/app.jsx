@@ -7,7 +7,8 @@ import styles from './app.module.css'
 import cn from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { getIngredients } from '../../services/slices/ingredients'
-import { addIngredientToConstructor } from '../../services/slices/burger-constructor'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 
 const url = '/ingredients'
 
@@ -18,16 +19,6 @@ const App = () => {
     useEffect(() => {
         dispatch(getIngredients({ url }))
     }, [dispatch])
-
-    useEffect(() => {
-        if (! items.length) return
-
-        const getRandomItem = (items) => items[Math.floor(Math.random() * items.length)]
-
-        for (let i = 0; i < 6; i ++) {
-            dispatch(addIngredientToConstructor({ item: getRandomItem(items) }))
-        }
-    }, [dispatch, items])
 
     return (
         <>
@@ -40,8 +31,10 @@ const App = () => {
 
             {items.length > 0 &&
                 <main className={styles.main}>
-                    <BurgerIngredients/>
-                    <BurgerConstructor/>
+                    <DndProvider backend={HTML5Backend}>
+                        <BurgerIngredients/>
+                        <BurgerConstructor/>
+                    </DndProvider>
                 </main>
             }
         </>

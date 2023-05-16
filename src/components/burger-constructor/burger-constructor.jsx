@@ -1,13 +1,15 @@
 import styles from './burger-constructor.module.css'
 import cn from 'classnames'
 import useModal from '../../hooks/use-modal'
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import Modal from '../modal/modal'
 import OrderDetails from './order-details/order-details'
 import ConstructorItem from './constructor-item/constructor-item'
 import OrderSummary from './order-summary/order-summary'
 import { useDispatch, useSelector } from 'react-redux'
 import { makeOrder } from '../../services/slices/order'
+import { useDrop } from 'react-dnd'
+import { addIngredient } from '../../services/slices/burger-constructor'
 
 const url = '/orders'
 
@@ -20,12 +22,8 @@ const BurgerConstructor = () => {
     const ingredients = components.map(item => item._id).concat(bun?._id || [])
 
     const handleOrder = () => {
-        dispatch(makeOrder({ url, ingredients }))
+        dispatch(makeOrder({ url, ingredients, onSuccess: openModal }))
     }
-
-    useEffect(() => {
-        number && openModal()
-    }, [number, openModal])
 
     const modal = useMemo(() => {
         if (! number) return null
@@ -37,35 +35,40 @@ const BurgerConstructor = () => {
         )
     }, [closeModal, number])
 
+    const [{ isOver, canDrop }, dropTarget] = useDrop({
+        accept: 'ingredient',
+        collect: monitor => ({
+            isOver: monitor.isOver(),
+            canDrop: monitor.canDrop()
+        }),
+        drop({ item }) {
+            dispatch(addIngredient({ item }))
+        }
+    })
+
     return (
         <section className='pt-25 pl-4'>
-            <div className={styles.items}>
-                {bun && <ConstructorItem type="top"
+            <div ref={dropTarget} className={cn(
+                styles.items,
+                { [styles.droppable]: canDrop },
+                { [styles.hovered]: isOver }
+            )}>
+                {bun && <ConstructorItem
+                    type="top"
                     isLocked
-                    text={bun.name}
-                    price={bun.price}
-                    thumbnail={bun.image}
-                    uuid={bun.uuid}
+                    item={bun}
                 />}
                 <div className={cn(styles.components, 'custom-scroll')}>
                     {components.map(item => (
                         <div key={item.uuid} className={styles.item}>
-                            <ConstructorItem
-                                text={item.name}
-                                price={item.price}
-                                thumbnail={item.image}
-                                uuid={item.uuid}
-                            />
+                            <ConstructorItem item={item}/>
                         </div>
                     ))}
                 </div>
                 {bun && <ConstructorItem
                     type="bottom"
                     isLocked
-                    text={bun.name}
-                    price={bun.price}
-                    thumbnail={bun.image}
-                    uuid={bun.uuid}
+                    item={bun}
                 />}
             </div>
 

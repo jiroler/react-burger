@@ -27,7 +27,7 @@ const orderSlice = createSlice({
 
 const { makeOrderRequest, makeOrderSuccess, makeOrderError } = orderSlice.actions
 
-export const makeOrder = ({ url, ingredients }) => async (dispatch, getState) => {
+export const makeOrder = ({ url, ingredients, onSuccess }) => async (dispatch, getState) => {
     try {
         if (getState().order.isPending) return
 
@@ -40,8 +40,13 @@ export const makeOrder = ({ url, ingredients }) => async (dispatch, getState) =>
 
         if (response.ok) {
             const json = await response.json()
+
             if (! json.success) throw new Error(json.message)
             dispatch(makeOrderSuccess({ number: json.order?.number }))
+
+            if (typeof onSuccess === 'function') {
+                onSuccess()
+            }
         } else {
             throw new Error(`Ошибка ${response.status}`)
         }

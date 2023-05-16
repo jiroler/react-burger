@@ -13,10 +13,22 @@ const ingredientsSlice = createSlice({
             state.isPending = true
             state.error = null
         },
-        getIngredientsSuccess: (state, action) => {
-            state.items = action.payload.items
-            state.isPending = false
-            state.error = null
+        getIngredientsSuccess: {
+            reducer: (state, action) => {
+                state.items = action.payload.items
+                state.isPending = false
+                state.error = null
+            },
+            prepare: (payload) => {
+                return {
+                    payload: {
+                        items: payload.items.map(item => {
+                            item.count = 0
+                            return item
+                        })
+                    }
+                }
+            }
         },
         getIngredientsError: (state, action) => {
             state.isPending = false
@@ -25,12 +37,12 @@ const ingredientsSlice = createSlice({
         incrementIngredient: (state, action) => {
             const item = state.items.find(item => item._id === action.payload.id)
             if (! item) return
-            item.counter ++
+            item.count ++
         },
         decrementIngredient: (state, action) => {
             const item = state.items.find(item => item._id === action.payload.id)
             if (! item) return
-            item.counter --
+            item.count --
         }
     }
 })
@@ -56,5 +68,4 @@ export const getIngredients = ({ url }) => async dispatch => {
 }
 
 export const { incrementIngredient, decrementIngredient } = ingredientsSlice.actions
-
 export default ingredientsSlice.reducer

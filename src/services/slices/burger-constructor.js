@@ -1,58 +1,69 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { v4 as uuidv4 } from 'uuid'
+import { decrementIngredient, incrementIngredient } from './ingredients'
 
 const burgerConstructorSlice = createSlice({
     name: 'burgerConstructor',
     initialState: {
         bun: null,
-        components: [],
-        totalPrice: 0
+        components: []
     },
     reducers: {
         addIngredientToConstructor: {
             reducer: (state, action) => {
                 const item = action.payload.item
 
-                if (! item) return
-
                 if (item.type === 'bun') {
-                    if (state.bun !== null) {
-                        state.totalPrice -= state.bun.price * 2
-                    }
                     state.bun = item
-                    state.totalPrice += item.price * 2
                 } else {
-                    state.components.push(item)
-                    state.totalPrice += item.price
+                    state.components.unshift(item)
                 }
             },
             prepare: (payload) => {
-                if (payload.item) {
-                    payload.item = {
-                        ...payload.item,
-                        uuid: uuidv4()
-                    }
+                payload.item = {
+                    ...payload.item,
+                    uuid: uuidv4()
                 }
                 return { payload }
             }
         },
         removeIngredientFromConstructor: (state, action) => {
-            const removingItem = state.bun.uuid === action.payload.uuid
-                ? state.bun
-                : state.components.find(item => item.uuid === action.payload.uuid)
-
-            if (! removingItem) return
+            const removingItem = action.payload.item
 
             if (removingItem.type === 'bun') {
                 state.bun = null
-                state.totalPrice -= removingItem.price * 2
             } else {
                 state.components = state.components.filter(item => item.uuid !== removingItem.uuid)
-                state.totalPrice -= removingItem.price
             }
         }
     }
 })
 
-export const { addIngredientToConstructor, removeIngredientFromConstructor } = burgerConstructorSlice.actions
+const { addIngredientToConstructor, removeIngredientFromConstructor } = burgerConstructorSlice.actions
+
+export const addIngredient = ({ item }) => (dispatch, getState) => {
+    const bun = getState().burgerConstructor.bun
+
+    if (item.type === 'bun') {
+        if (item._id === bun?._id) return
+
+        // Старая булка заменяется
+        if (bun !== null) {
+            dispatch(decrementIngredient({ id: bun._id }))
+            dispatch(decrementIngredient({ id: bun._id }))
+        }
+
+        // Дублируем булку
+        dispatch(incrementIngredient({ id: item._id }))
+    }
+
+    dispatch(addIngredientToConstructor({ item }))
+    dispatch(incrementIngredient({ id: item._id }))
+}
+
+export const removeIngredient = ({ item }) => dispatch => {
+    dispatch(removeIngredientFromConstructor({ item }))
+    dispatch(decrementIngredient({ id: item._id }))
+}
+
 export default burgerConstructorSlice.reducer

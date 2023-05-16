@@ -13,7 +13,7 @@ const TabGroup = memo(forwardRef(({ name, type, handleIngredientClick }, titleRe
             <p ref={titleRef} className='text text_type_main-medium'>{name}</p>
             <div className={cn(styles.container, 'p-4 pt-6 pb-10')}>
                 {items.map(item => (
-                    <BurgerIngredient key={item._id} item={item} count={item.fat % 10} handleClick={handleIngredientClick}/>
+                    <BurgerIngredient key={item._id} item={item} handleClick={handleIngredientClick}/>
                 ))}
             </div>
         </>

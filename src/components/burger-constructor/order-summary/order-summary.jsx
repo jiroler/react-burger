@@ -6,8 +6,12 @@ import { func } from 'prop-types'
 import { useSelector } from 'react-redux'
 
 const OrderSummary = memo(({ handleOrder }) => {
+    const { bun, components } = useSelector(store => store.burgerConstructor)
 
-    const totalPrice = useSelector(store => store.burgerConstructor.totalPrice)
+    let totalPrice = components.reduce((acc, component) => acc += component.price, 0)
+    if (bun !== null) {
+        totalPrice += bun.price * 2
+    }
 
     return (
         <div className={cn(styles.summary, 'mt-10 pr-4')}>

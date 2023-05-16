@@ -4,17 +4,18 @@ import cn from 'classnames'
 import { ConstructorElement, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components'
 import { bool, number, string } from 'prop-types'
 import { useDispatch } from 'react-redux'
-import { removeIngredientFromConstructor } from '../../../services/slices/burger-constructor'
+import { removeIngredient } from '../../../services/slices/burger-constructor'
 
 const textSuffixes = {
     top: ' (верх)',
     bottom: ' (низ)'
 }
 
-const ConstructorItem = memo(({ type, isLocked, text, price, thumbnail, uuid }) => {
+const ConstructorItem = memo(({ type, isLocked, item }) => {
     const dispatch = useDispatch()
     const handleRemove = () => {
-        dispatch(removeIngredientFromConstructor({ uuid }))
+        if (isLocked) return
+        dispatch(removeIngredient({ item }))
     }
 
     return (
@@ -22,10 +23,10 @@ const ConstructorItem = memo(({ type, isLocked, text, price, thumbnail, uuid }) 
             {! isLocked && <DragIcon type="primary" />}
             <ConstructorElement
                 type={type}
-                text={text + (textSuffixes[type] ?? '')}
+                text={item.name + (textSuffixes[type] ?? '')}
                 isLocked={isLocked}
-                price={price}
-                thumbnail={thumbnail}
+                price={item.price}
+                thumbnail={item.image}
                 extraClass={cn(styles.dark, 'mr-4')}
                 handleClose={handleRemove}
             />
