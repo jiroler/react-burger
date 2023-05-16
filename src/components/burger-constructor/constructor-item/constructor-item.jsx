@@ -20,6 +20,7 @@ const ConstructorItem = memo(({ type, isLocked, item, originalIndex, findIndex }
         dispatch(removeComponent({ item }))
     }
 
+    // Перетаскиваемый ингредиент
     const [{ isDragging }, dragRef] = useDrag(() => ({
         type: 'component',
         item: { uuid: item.uuid, originalIndex },
@@ -33,6 +34,7 @@ const ConstructorItem = memo(({ type, isLocked, item, originalIndex, findIndex }
         }
     }), [item.uuid, originalIndex, dispatch])
 
+    // Ингредиент, на который перетаскиваем
     const [, dropRef] = useDrop(() => ({
         accept: 'component',
         hover({ uuid: draggedUuid }) {

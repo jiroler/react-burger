@@ -25,16 +25,14 @@ const BurgerConstructor = () => {
         dispatch(makeOrder({ url, ingredients, onSuccess: openModal }))
     }
 
-    const modal = useMemo(() => {
-        if (! number) return null
-
-        return (
+    const modal = useMemo(() => (
+        number !== null &&
             <Modal handleClose={closeModal}>
                 <OrderDetails number={number}/>
             </Modal>
-        )
-    }, [closeModal, number])
+    ), [closeModal, number])
 
+    // Добавление ингредиента
     const [{ isOver, canDrop }, dropTarget] = useDrop({
         accept: 'ingredient',
         collect: monitor => ({
@@ -46,6 +44,7 @@ const BurgerConstructor = () => {
         }
     })
 
+    // Для сортировки
     const findIndex = useCallback(uuid => {
         return components.findIndex(item => item.uuid === uuid)
     }, [components])
