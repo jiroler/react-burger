@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import styles from './ingredient-details.module.css'
 import cn from 'classnames'
-import { dataItemType } from '../../../utils/types'
+import { ingredientItemType } from '../../../utils/types'
 
 const IngredientDetails = ({ item }) => {
     const imageRef = useRef()
@@ -46,7 +46,7 @@ const IngredientDetails = ({ item }) => {
 }
 
 IngredientDetails.propTypes = {
-    item: dataItemType
+    item: ingredientItemType
 }
 
 export default IngredientDetails

@@ -1,62 +1,83 @@
 import styles from './burger-constructor.module.css'
 import cn from 'classnames'
-import { dataItemType } from '../../utils/types'
-import { arrayOf } from 'prop-types'
 import useModal from '../../hooks/use-modal'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import Modal from '../modal/modal'
 import OrderDetails from './order-details/order-details'
 import ConstructorItem from './constructor-item/constructor-item'
 import OrderSummary from './order-summary/order-summary'
+import { useDispatch, useSelector } from 'react-redux'
+import { makeOrder } from '../../services/slices/order'
+import { useDrop } from 'react-dnd'
+import { addIngredientToConstructor } from '../../services/slices/burger-constructor'
 
-const BurgerConstructor = ({ bun, components }) => {
+const BurgerConstructor = () => {
+    const dispatch = useDispatch()
+    const { bun, components } = useSelector(store => store.burgerConstructor)
+    const { number, error } = useSelector(store => store.order)
     const [isModalVisible, openModal, closeModal] = useModal()
 
+    const ingredients = components.map(item => item._id).concat(bun?._id || [])
+
+    const handleOrder = () => {
+        dispatch(makeOrder({ endpoint: '/orders', ingredients, onSuccess: openModal }))
+    }
+
     const modal = useMemo(() => (
-        <Modal handleClose={closeModal}>
-            <OrderDetails/>
-        </Modal>
-    ), [closeModal])
+        number !== null &&
+            <Modal handleClose={closeModal}>
+                <OrderDetails number={number}/>
+            </Modal>
+    ), [closeModal, number])
+
+    // Добавление ингредиента
+    const [{ isOver, canDrop }, dropTarget] = useDrop({
+        accept: 'ingredient',
+        collect: monitor => ({
+            isOver: monitor.isOver(),
+            canDrop: monitor.canDrop()
+        }),
+        drop({ item }) {
+            dispatch(addIngredientToConstructor({ item }))
+        }
+    })
+
+    // Для сортировки
+    const findIndex = useCallback(uuid => {
+        return components.findIndex(item => item.uuid === uuid)
+    }, [components])
 
     return (
         <section className='pt-25 pl-4'>
-            <div className={styles.items}>
-                <ConstructorItem type="top"
+            <div ref={dropTarget} className={cn(
+                styles.items,
+                { [styles.droppable]: canDrop },
+                { [styles.hovered]: isOver }
+            )}>
+                {bun && <ConstructorItem
+                    type="top"
                     isLocked
-                    text={bun.name}
-                    price={bun.price}
-                    thumbnail={bun.image}
-                />
+                    item={bun}
+                />}
                 <div className={cn(styles.components, 'custom-scroll')}>
                     {components.map((item, index) => (
-                        <div key={index} className={styles.item}>
-                            <ConstructorItem
-                                text={item.name}
-                                price={item.price}
-                                thumbnail={item.image}
-                            />
-                        </div>
+                        <ConstructorItem key={item.uuid} item={item} originalIndex={index} findIndex={findIndex}/>
                     ))}
                 </div>
-                <ConstructorItem
+                {bun && <ConstructorItem
                     type="bottom"
                     isLocked
-                    text={bun.name}
-                    price={bun.price}
-                    thumbnail={bun.image}
-                />
+                    item={bun}
+                />}
             </div>
 
-            <OrderSummary handleOrder={openModal}/>
+            <OrderSummary handleOrder={handleOrder}/>
+
+            {error && <p className={cn(styles.error, 'text text_type_main-medium p-4')}>{error}</p>}
 
             {isModalVisible && modal}
         </section>
     )
-}
-
-BurgerConstructor.propTypes = {
-    bun: dataItemType,
-    components: arrayOf(dataItemType).isRequired
 }
 
 export default BurgerConstructor

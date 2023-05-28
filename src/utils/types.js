@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import PropTypes from 'prop-types'
 
-export const dataItemType = PropTypes.exact({
+const ingredientSchema = {
     _id: PropTypes.string,
     name: PropTypes.string,
     type: PropTypes.string,
@@ -14,4 +14,12 @@ export const dataItemType = PropTypes.exact({
     image_mobile: PropTypes.string,
     image_large: PropTypes.string,
     __v: PropTypes.number
-}).isRequired
+}
+
+const constructorSchema = {
+    ...ingredientSchema,
+    uuid: PropTypes.string
+}
+
+export const ingredientItemType = PropTypes.exact(ingredientSchema)
+export const constructorItemType = PropTypes.exact(constructorSchema)

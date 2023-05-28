@@ -1,13 +1,12 @@
 import styles from './burger-ingredients.module.css'
 import cn from 'classnames'
-import { arrayOf } from 'prop-types'
-import { dataItemType } from '../../utils/types'
-import useModal from '../../hooks/use-modal'
 import Modal from '../modal/modal'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import IngredientDetails from './ingredient-details/ingredient-details'
 import Tabs from './tabs/tabs'
 import TabGroup from './tab-group/tab-group'
+import { useDispatch, useSelector } from 'react-redux'
+import { clearIngredientDetails, setIngredientDetails } from '../../services/slices/ingredient-details'
 
 const tabs = [
     { type: 'bun', name: 'Булки' },
@@ -15,25 +14,19 @@ const tabs = [
     { type: 'main', name: 'Начинка' }
 ]
 
-const BurgerIngredients = ({ data }) => {
-    const [isModalVisible, openModal, closeModal] = useModal()
-    const [modalItem, setModalItem] = useState(null)
+const BurgerIngredients = () => {
+    const [activeTab, setActiveTab] = useState(tabs[0].type)
+
+    const dispatch = useDispatch()
+    const modalItem = useSelector(store => store.ingredientDetails.item)
+
+    const closeModal = useCallback(() => {
+        dispatch(clearIngredientDetails())
+    }, [dispatch])
 
     const handleIngredientClick = useCallback(item => {
-        if (! item) return
-        setModalItem(item)
-        openModal()
-    }, [openModal])
-
-    const tabGroups = useMemo(() => {
-        return tabs.reduce((acc, tab) => {
-            acc.push({
-                ...tab,
-                items: data.filter(item => item.type === tab.type)
-            })
-            return acc
-        }, [])
-    }, [data])
+        dispatch(setIngredientDetails({ item }))
+    }, [dispatch])
 
     const modal = useMemo(() => (
         modalItem &&
@@ -42,29 +35,67 @@ const BurgerIngredients = ({ data }) => {
             </Modal>
     ), [modalItem, closeModal])
 
+    const containerRef = useRef(null)
+    const tabGroupRefs = useRef(tabs.reduce((acc, tab) => {
+        acc[tab.type] = null
+        return acc
+    }, {}))
+
+    const tabClickHandler = useCallback(type => {
+        const containerNode = containerRef.current
+        const tabGroupNode = tabGroupRefs.current[type]
+
+        containerNode.scrollTop = tabGroupNode.offsetTop - containerNode.offsetTop
+        setActiveTab(type)
+    }, [])
+
+    useEffect(() => {
+        const containerNode = containerRef.current
+        let debounceTimeout
+
+        const scrollListener = () => {
+            debounceTimeout && clearTimeout(debounceTimeout)
+            debounceTimeout = setTimeout(() => {
+                let nearestType = ''
+                let minOffset = Infinity
+
+                for (const [type, tabGroupNode] of Object.entries(tabGroupRefs.current)) {
+                    const currentOffset = Math.abs((tabGroupNode.offsetTop - containerNode.offsetTop) - containerNode.scrollTop)
+                    if (currentOffset < minOffset) {
+                        minOffset = currentOffset
+                        nearestType = type
+                    }
+                }
+
+                setActiveTab(nearestType)
+            }, 100)
+        }
+
+        containerNode.addEventListener('scroll', scrollListener)
+        return () => {
+            containerNode.removeEventListener('scroll', scrollListener)
+        }
+    }, [])
+
     return (
         <section className='pt-10'>
             <h1 className='text text_type_main-large'>Соберите бургер</h1>
-            <Tabs items={tabs}/>
-            <div className={cn(styles.ingredients, 'custom-scroll')}>
-                {tabGroups.map(group => (
+            <Tabs items={tabs} activeTab={activeTab} clickHandler={tabClickHandler}/>
+            <div ref={containerRef} className={cn(styles.ingredients, 'custom-scroll')}>
+                {tabs.map(tab => (
                     <TabGroup
-                        key={group.type}
-                        name={group.name}
-                        type={group.type}
-                        items={group.items}
+                        ref={node => tabGroupRefs.current[tab.type] = node}
+                        key={tab.type}
+                        name={tab.name}
+                        type={tab.type}
                         handleIngredientClick={handleIngredientClick}
                     />
                 ))}
             </div>
 
-            {isModalVisible && modal}
+            {modal}
         </section>
     )
-}
-
-BurgerIngredients.propTypes = {
-    data: arrayOf(dataItemType).isRequired
 }
 
 export default BurgerIngredients

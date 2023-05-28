@@ -9,8 +9,11 @@
     flex: 1;
 }
 
-.error {
+.info {
     margin: 50px;
-    color: red;
     text-align: center;
+}
+
+.error {
+    color: red;
 }

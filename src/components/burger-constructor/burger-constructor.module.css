@@ -2,13 +2,59 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    align-items: end;
+    align-items: flex-end;
+    position: relative;
+}
+
+.items.droppable {
+    min-height: 272px;
+}
+
+.items.droppable > * {
+    opacity: .1;
+}
+
+.items.droppable:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 4px dashed #8585AD;
+    background-color: #8585ad16;
+    border-radius: 32px;
+    z-index: 1;
+}
+
+.items.droppable:after {
+    content: 'Drag here';
+    font-size: 48px;
+    font-family: 'Jet Brains Mono';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #8585AD;
+}
+
+.items.droppable.hovered:before {
+    background-color: #8585ad2e;
+    border-color: #F2F2F3;
+}
+
+.items.droppable.hovered:after {
+    color: #F2F2F3;
 }
 
 .components {
     overflow-y: overlay;
     max-height: 464px;
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 16px;
+}
+
+.error {
+    color: red;
+    text-align: right;
 }

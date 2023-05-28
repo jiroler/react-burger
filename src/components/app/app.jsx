@@ -1,46 +1,40 @@
 
-import { useMemo } from 'react'
+import { useEffect } from 'react'
 import AppHeader from '../app-header/app-header'
 import BurgerConstructor from '../burger-constructor/burger-constructor'
 import BurgerIngredients from '../burger-ingredients/burger-ingredients'
 import styles from './app.module.css'
-import useFetch from '../../hooks/use-fetch'
-
-const url = 'https://norma.nomoreparties.space/api/ingredients'
+import cn from 'classnames'
+import { useDispatch, useSelector } from 'react-redux'
+import { getIngredients } from '../../services/slices/ingredients'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 
 const App = () => {
+    const dispatch = useDispatch()
+    const { items, isPending, error } = useSelector(store => store.ingredients)
 
-    const { data, isLoaded, error } = useFetch(url)
-
-    const fakeOrder = useMemo(() => {
-        const getRandomItem = (items) => items[Math.floor(Math.random() * items.length)]
-
-        const allBuns = data.filter(item => item.type === 'bun')
-        const allComponents = data.filter(item => item.type !== 'bun')
-        const fakeComponents = []
-
-        while (fakeComponents.length < 6) {
-            fakeComponents.push(getRandomItem(allComponents))
-        }
-
-        return {
-            bun: getRandomItem(allBuns),
-            components: fakeComponents
-        }
-    }, [data])
+    useEffect(() => {
+        dispatch(getIngredients({ endpoint: '/ingredients' }))
+    }, [dispatch])
 
     return (
         <>
             <AppHeader/>
 
             {error &&
-                <h1 className={styles.error}>{error}</h1>
+                <h1 className={cn(styles.info, styles.error, 'text text_type_main-large')}>{error}</h1>
+            }
+            {isPending &&
+                <h1 className={cn(styles.info, 'text text_type_main-large')}>Загрузка...</h1>
             }
 
-            {isLoaded &&
+            {items.length > 0 &&
                 <main className={styles.main}>
-                    <BurgerIngredients data={data}/>
-                    <BurgerConstructor {...fakeOrder}/>
+                    <DndProvider backend={HTML5Backend}>
+                        <BurgerIngredients/>
+                        <BurgerConstructor/>
+                    </DndProvider>
                 </main>
             }
         </>

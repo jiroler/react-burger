@@ -1,4 +1,5 @@
 .ingredients {
     overflow-y: overlay;
+    scroll-behavior: smooth;
     max-height: 720px;
 }
