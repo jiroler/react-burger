@@ -10,14 +10,12 @@ import { getIngredients } from '../../services/slices/ingredients'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 
-const url = '/ingredients'
-
 const App = () => {
     const dispatch = useDispatch()
     const { items, isPending, error } = useSelector(store => store.ingredients)
 
     useEffect(() => {
-        dispatch(getIngredients({ url }))
+        dispatch(getIngredients({ endpoint: '/ingredients' }))
     }, [dispatch])
 
     return (

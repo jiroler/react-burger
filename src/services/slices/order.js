@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { baseUrl } from '../../utils/api'
+import { clearConstructor } from './burger-constructor'
+import { request } from '../../utils/api'
 
 const orderSlice = createSlice({
     name: 'order',
@@ -27,29 +28,26 @@ const orderSlice = createSlice({
 
 const { makeOrderRequest, makeOrderSuccess, makeOrderError } = orderSlice.actions
 
-export const makeOrder = ({ url, ingredients, onSuccess }) => async (dispatch, getState) => {
+export const makeOrder = ({ endpoint, ingredients, onSuccess }) => async (dispatch, getState) => {
     try {
         if (getState().order.isPending) return
+        if (getState().burgerConstructor.bun === null) throw new Error('Добавьте булку')
+        if (getState().burgerConstructor.components.length === 0) throw new Error('Добавьте ингредиенты')
 
         dispatch(makeOrderRequest())
-        const response = await fetch(baseUrl + url, {
+        const json = await request(endpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ingredients })
         })
 
-        if (response.ok) {
-            const json = await response.json()
+        dispatch(makeOrderSuccess({ number: json.order?.number }))
+        dispatch(clearConstructor())
 
-            if (! json.success) throw new Error(json.message)
-            dispatch(makeOrderSuccess({ number: json.order?.number }))
-
-            if (typeof onSuccess === 'function') {
-                onSuccess()
-            }
-        } else {
-            throw new Error(`Ошибка ${response.status}`)
+        if (typeof onSuccess === 'function') {
+            onSuccess()
         }
+
     } catch (error) {
         const message = error?.message || 'Ошибка загрузки'
         dispatch(makeOrderError({ message }))

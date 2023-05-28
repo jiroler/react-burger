@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { v4 as uuidv4 } from 'uuid'
-import { decrementIngredient, incrementIngredient } from './ingredients'
 
 const burgerConstructorSlice = createSlice({
     name: 'burgerConstructor',
@@ -37,36 +36,13 @@ const burgerConstructorSlice = createSlice({
 
             state.components.splice(originalIndex, 1)
             state.components.splice(index, 0, component)
+        },
+        clearConstructor: (state) => {
+            state.bun = null
+            state.components = []
         }
     }
 })
 
-const { addIngredientToConstructor, removeComponentFromConstructor } = burgerConstructorSlice.actions
-
-export const addIngredient = ({ item }) => (dispatch, getState) => {
-    const bun = getState().burgerConstructor.bun
-
-    if (item.type === 'bun') {
-        if (item._id === bun?._id) return
-
-        // Старая булка заменяется
-        if (bun !== null) {
-            dispatch(decrementIngredient({ id: bun._id }))
-            dispatch(decrementIngredient({ id: bun._id }))
-        }
-
-        // Дублируем булку
-        dispatch(incrementIngredient({ id: item._id }))
-    }
-
-    dispatch(addIngredientToConstructor({ item }))
-    dispatch(incrementIngredient({ id: item._id }))
-}
-
-export const removeComponent = ({ item }) => dispatch => {
-    dispatch(removeComponentFromConstructor({ item }))
-    dispatch(decrementIngredient({ id: item._id }))
-}
-
-export const { moveComponent } = burgerConstructorSlice.actions
+export const { addIngredientToConstructor, removeComponentFromConstructor, moveComponent, clearConstructor } = burgerConstructorSlice.actions
 export default burgerConstructorSlice.reducer

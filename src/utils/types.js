@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import PropTypes from 'prop-types'
 
-const originalSchema = {
+const ingredientSchema = {
     _id: PropTypes.string,
     name: PropTypes.string,
     type: PropTypes.string,
@@ -14,11 +14,6 @@ const originalSchema = {
     image_mobile: PropTypes.string,
     image_large: PropTypes.string,
     __v: PropTypes.number
-}
-
-const ingredientSchema = {
-    ...originalSchema,
-    count: PropTypes.number
 }
 
 const constructorSchema = {

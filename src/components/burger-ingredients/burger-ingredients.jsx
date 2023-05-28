@@ -15,7 +15,7 @@ const tabs = [
 ]
 
 const BurgerIngredients = () => {
-    const [activeTab, setActiveTab] = useState('bun')
+    const [activeTab, setActiveTab] = useState(tabs[0].type)
 
     const dispatch = useDispatch()
     const modalItem = useSelector(store => store.ingredientDetails.item)
@@ -42,7 +42,10 @@ const BurgerIngredients = () => {
     }, {}))
 
     const tabClickHandler = useCallback(type => {
-        containerRef.current.scrollTop = tabGroupRefs.current[type].offsetTop - containerRef.current.offsetTop
+        const containerNode = containerRef.current
+        const tabGroupNode = tabGroupRefs.current[type]
+
+        containerNode.scrollTop = tabGroupNode.offsetTop - containerNode.offsetTop
         setActiveTab(type)
     }, [])
 
@@ -56,8 +59,8 @@ const BurgerIngredients = () => {
                 let nearestType = ''
                 let minOffset = Infinity
 
-                for (const [type, tabGroupElement] of Object.entries(tabGroupRefs.current)) {
-                    const currentOffset = Math.abs((tabGroupElement.offsetTop - containerRef.current.offsetTop) - containerRef.current.scrollTop)
+                for (const [type, tabGroupNode] of Object.entries(tabGroupRefs.current)) {
+                    const currentOffset = Math.abs((tabGroupNode.offsetTop - containerNode.offsetTop) - containerNode.scrollTop)
                     if (currentOffset < minOffset) {
                         minOffset = currentOffset
                         nearestType = type

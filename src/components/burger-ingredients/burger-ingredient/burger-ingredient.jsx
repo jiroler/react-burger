@@ -5,11 +5,18 @@ import { func } from 'prop-types'
 import { ingredientItemType } from '../../../utils/types'
 import { memo } from 'react'
 import { useDrag } from 'react-dnd'
+import { useSelector } from 'react-redux'
 
 const BurgerIngredient = memo(({ item, handleClick }) => {
     const onClick = () => {
         handleClick(item)
     }
+
+    const count = useSelector(store =>
+        store.burgerConstructor.bun?._id !== item._id
+            ? store.burgerConstructor.components.filter(component => component._id === item._id).length
+            : 2
+    )
 
     const [{ isDragging }, ref] = useDrag({
         type: 'ingredient',
@@ -29,7 +36,7 @@ const BurgerIngredient = memo(({ item, handleClick }) => {
             <p className="text text_type_main-default mt-1 pr-1 pl-1">
                 {item.name}
             </p>
-            {item.count > 0 && <Counter count={item.count} size="default" extraClass="m-1" />}
+            {count > 0 && <Counter count={count} size="default" extraClass="m-1" />}
         </div>
     )
 })

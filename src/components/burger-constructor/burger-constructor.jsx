@@ -9,20 +9,18 @@ import OrderSummary from './order-summary/order-summary'
 import { useDispatch, useSelector } from 'react-redux'
 import { makeOrder } from '../../services/slices/order'
 import { useDrop } from 'react-dnd'
-import { addIngredient } from '../../services/slices/burger-constructor'
-
-const url = '/orders'
+import { addIngredientToConstructor } from '../../services/slices/burger-constructor'
 
 const BurgerConstructor = () => {
     const dispatch = useDispatch()
     const { bun, components } = useSelector(store => store.burgerConstructor)
-    const [isModalVisible, openModal, closeModal] = useModal()
     const { number, error } = useSelector(store => store.order)
+    const [isModalVisible, openModal, closeModal] = useModal()
 
     const ingredients = components.map(item => item._id).concat(bun?._id || [])
 
     const handleOrder = () => {
-        dispatch(makeOrder({ url, ingredients, onSuccess: openModal }))
+        dispatch(makeOrder({ endpoint: '/orders', ingredients, onSuccess: openModal }))
     }
 
     const modal = useMemo(() => (
@@ -40,7 +38,7 @@ const BurgerConstructor = () => {
             canDrop: monitor.canDrop()
         }),
         drop({ item }) {
-            dispatch(addIngredient({ item }))
+            dispatch(addIngredientToConstructor({ item }))
         }
     })
 

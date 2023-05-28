@@ -4,7 +4,7 @@ import cn from 'classnames'
 import { ConstructorElement, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components'
 import { bool, func, number, string } from 'prop-types'
 import { useDispatch } from 'react-redux'
-import { moveComponent, removeComponent } from '../../../services/slices/burger-constructor'
+import { moveComponent, removeComponentFromConstructor } from '../../../services/slices/burger-constructor'
 import { useDrag, useDrop } from 'react-dnd'
 import { constructorItemType } from '../../../utils/types'
 
@@ -17,7 +17,7 @@ const ConstructorItem = memo(({ type, isLocked, item, originalIndex, findIndex }
     const dispatch = useDispatch()
     const handleRemove = () => {
         if (isLocked) return
-        dispatch(removeComponent({ item }))
+        dispatch(removeComponentFromConstructor({ item }))
     }
 
     // Перетаскиваемый ингредиент
