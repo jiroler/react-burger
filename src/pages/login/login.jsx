@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 const LoginPage = () => {
     return (
-        <div class="auth-form">
+        <form className="auth-form">
             <p className="text text_type_main-medium">Вход</p>
             <EmailInput
                 name={'email'}
@@ -14,7 +14,7 @@ const LoginPage = () => {
                 name={'password'}
                 extraClass="mt-6"
             />
-            <Button htmlType="button" type="primary" size="large" extraClass="mt-6 mb-20">
+            <Button htmlType="submit" type="primary" size="large" extraClass="mt-6 mb-20">
                 Войти
             </Button>
             <p className="text text_type_main-default mb-4 text_color_inactive">
@@ -23,8 +23,7 @@ const LoginPage = () => {
             <p className="text text_type_main-default text_color_inactive">
                 Забыли пароль? <Link to='/forgot-password'>Восстановить пароль</Link>
             </p>
-
-        </div>
+        </form>
     )
 }
 

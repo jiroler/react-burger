@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 const RegisterPage = () => {
     return (
-        <div class="auth-form">
+        <form className="auth-form">
             <p className="text text_type_main-medium">Регистрация</p>
             <Input
                 type={'text'}
@@ -20,13 +20,13 @@ const RegisterPage = () => {
                 name={'password'}
                 extraClass="mt-6"
             />
-            <Button htmlType="button" type="primary" size="large" extraClass="mt-6 mb-20">
+            <Button htmlType="submit" type="primary" size="large" extraClass="mt-6 mb-20">
                 Зарегистрироваться
             </Button>
             <p className="text text_type_main-default mb-4 text_color_inactive">
                 Уже зарегистрированы? <Link to='/login'>Войти</Link>
             </p>
-        </div>
+        </form>
     )
 }
 

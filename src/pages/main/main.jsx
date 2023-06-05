@@ -20,7 +20,7 @@ const MainPage = () => {
     return (
         <>
             {error &&
-            <h1 className={cn(styles.info, styles.error, 'text text_type_main-large')}>{error}</h1>
+            <h1 className={cn(styles.info, 'text text_type_main-large error')}>{error}</h1>
             }
             {isPending &&
             <h1 className={cn(styles.info, 'text text_type_main-large')}>Загрузка...</h1>
