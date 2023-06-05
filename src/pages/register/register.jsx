@@ -24,7 +24,7 @@ const RegisterPage = () => {
                 Зарегистрироваться
             </Button>
             <p className="text text_type_main-default mb-4 text_color_inactive">
-                Уже зарегистрированы? <Link to='/login'>Войти</Link>
+                Уже зарегистрированы? <Link to='/login' className='text_color_accent'>Войти</Link>
             </p>
         </form>
     )

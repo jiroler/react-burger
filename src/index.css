@@ -24,3 +24,12 @@ code {
 .error {
     color: red;
 }
+
+.text {
+    color: #F2F2F3;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}

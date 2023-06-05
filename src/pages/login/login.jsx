@@ -18,10 +18,10 @@ const LoginPage = () => {
                 Войти
             </Button>
             <p className="text text_type_main-default mb-4 text_color_inactive">
-                Вы - новый пользователь? <Link to='/register'>Зарегистрироваться</Link>
+                Вы - новый пользователь? <Link to='/register' className='text_color_accent'>Зарегистрироваться</Link>
             </p>
             <p className="text text_type_main-default text_color_inactive">
-                Забыли пароль? <Link to='/forgot-password'>Восстановить пароль</Link>
+                Забыли пароль? <Link to='/forgot-password' className='text_color_accent'>Восстановить пароль</Link>
             </p>
         </form>
     )

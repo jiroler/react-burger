@@ -53,7 +53,7 @@ const ForgotPasswordPage = () => {
             </Button>
             {error && <p class="text_type_main-default error">{error}</p>}
             <p className="text text_type_main-default mt-20 text_color_inactive">
-                Вспомнили пароль? <Link to='/login'>Войти</Link>
+                Вспомнили пароль? <Link to='/login' className='text_color_accent'>Войти</Link>
             </p>
         </form>
     )
