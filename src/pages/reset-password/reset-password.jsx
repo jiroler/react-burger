@@ -34,7 +34,6 @@ const ResetPasswordPage = () => {
     }
 
     const handleSubmit = (event) => {
-        if (isPending) return
         event.preventDefault()
         fetchResetConfirm(formData)
     }
@@ -57,10 +56,10 @@ const ResetPasswordPage = () => {
                 value={formData.token}
                 required={true}
             />
-            <Button htmlType="submit" type="primary" size="large" extraClass="mt-6">
+            <Button disabled={isPending} htmlType="submit" type="primary" size="large" extraClass="mt-6">
                 Сохранить
             </Button>
-            {error && <p class="text_type_main-default error">{error}</p>}
+            {error && <p className="text_type_main-default error">{error}</p>}
             <p className="text text_type_main-default mt-20 text_color_inactive">
                 Вспомнили пароль? <Link to='/login' className='text_color_accent'>Войти</Link>
             </p>

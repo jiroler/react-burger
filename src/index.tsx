@@ -9,10 +9,12 @@ import ingredients from './services/slices/ingredients'
 import burgerConstructor from './services/slices/burger-constructor'
 import ingredientDetails from './services/slices/ingredient-details'
 import order from './services/slices/order'
+import auth from './services/slices/auth'
 import { Provider } from 'react-redux'
 
 const store = configureStore({
     reducer: {
+        auth,
         ingredients,
         burgerConstructor,
         ingredientDetails,
