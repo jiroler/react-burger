@@ -1,10 +1,10 @@
 export const baseUrl = 'https://norma.nomoreparties.space/api'
 
-const checkResponse = (response) => {
+const checkResponse = async (response) => {
     if (response.ok) {
         return response.json()
     }
-    throw new Error(`Ошибка ${response.status}`)
+    throw await response.json()
 }
 
 const checkSuccess = (response) => {

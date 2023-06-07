@@ -30,6 +30,14 @@ const authSlice = createSlice({
             state.isPending = false
             state.user = null
         },
+        getUserSuccess: (state, action) => {
+            state.isPending = false
+            state.user = action.payload.user
+        },
+        updateUserSuccess: (state, action) => {
+            state.isPending = false
+            state.user = action.payload.user
+        },
         authError: (state, action) => {
             state.isPending = false
             state.error = action.payload.message
@@ -37,7 +45,7 @@ const authSlice = createSlice({
     }
 })
 
-const { authRequest, authError, registerSuccess, loginSuccess, refreshSuccess, logoutSuccess } = authSlice.actions
+const { authRequest, authError, registerSuccess, loginSuccess, refreshSuccess, logoutSuccess, getUserSuccess, updateUserSuccess } = authSlice.actions
 
 export const register = ({ endpoint, formData, onSuccess }) => async (dispatch, getState) => {
     try {
@@ -54,7 +62,8 @@ export const register = ({ endpoint, formData, onSuccess }) => async (dispatch, 
         })
 
         dispatch(registerSuccess(json))
-        cookies.set(ECookie.refreshToken, formData.refreshToken)
+        cookies.set(ECookie.refreshToken, json.refreshToken)
+        cookies.set(ECookie.accessToken, json.accessToken)
 
         if (typeof onSuccess === 'function') {
             onSuccess()
@@ -81,6 +90,7 @@ export const login = ({ endpoint, formData, onSuccess }) => async (dispatch, get
 
         dispatch(loginSuccess(json))
         cookies.set(ECookie.refreshToken, json.refreshToken)
+        cookies.set(ECookie.accessToken, json.accessToken)
 
         if (typeof onSuccess === 'function') {
             onSuccess()
@@ -92,8 +102,10 @@ export const login = ({ endpoint, formData, onSuccess }) => async (dispatch, get
     }
 }
 
-export const refresh = ({ endpoint, onSuccess }) => async (dispatch) => {
+export const refresh = ({ endpoint, onSuccess }) => async (dispatch, getState) => {
     try {
+        if (getState().auth.isPending) return
+
         dispatch(authRequest())
         const json = await request(endpoint, {
             method: 'POST',
@@ -103,6 +115,7 @@ export const refresh = ({ endpoint, onSuccess }) => async (dispatch) => {
 
         dispatch(refreshSuccess(json))
         cookies.set(ECookie.refreshToken, json.refreshToken)
+        cookies.set(ECookie.accessToken, json.accessToken)
 
         if (typeof onSuccess === 'function') {
             onSuccess()
@@ -113,8 +126,10 @@ export const refresh = ({ endpoint, onSuccess }) => async (dispatch) => {
     }
 }
 
-export const logout = ({ endpoint, onSuccess }) => async (dispatch) => {
+export const logout = ({ endpoint, onSuccess }) => async (dispatch, getState) => {
     try {
+        if (getState().auth.isPending) return
+
         dispatch(authRequest())
         await request(endpoint, {
             method: 'POST',
@@ -124,6 +139,7 @@ export const logout = ({ endpoint, onSuccess }) => async (dispatch) => {
 
         dispatch(logoutSuccess())
         cookies.remove(ECookie.refreshToken)
+        cookies.remove(ECookie.accessToken)
 
         if (typeof onSuccess === 'function') {
             onSuccess()
@@ -131,6 +147,71 @@ export const logout = ({ endpoint, onSuccess }) => async (dispatch) => {
     } catch (error) {
         const message = error?.message || 'Неизвестная ошибка'
         dispatch(authError({ message }))
+    }
+}
+
+export const getUser = ({ endpoint, onSuccess }) => async (dispatch, getState) => {
+    try {
+        if (getState().auth.isPending) return
+
+        dispatch(authRequest())
+        const json = await request(endpoint, {
+            headers: { authorization: cookies.get(ECookie.accessToken) }
+        })
+
+        dispatch(getUserSuccess(json))
+
+        if (typeof onSuccess === 'function') {
+            onSuccess()
+        }
+    } catch (error) {
+        const message = error?.message || 'Неизвестная ошибка'
+        dispatch(authError({ message }))
+
+        // retry
+        if (message === 'jwt expired') {
+            dispatch(refresh({
+                endpoint: '/auth/token',
+                onSuccess: () => {
+                    dispatch(getUser({ endpoint, onSuccess }))
+                }
+            }))
+        }
+    }
+}
+
+export const updateUser = ({ endpoint, formData, onSuccess }) => async (dispatch, getState) => {
+    try {
+        if (getState().auth.isPending) return
+
+        dispatch(authRequest())
+        const json = await request(endpoint, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                authorization: cookies.get(ECookie.accessToken)
+            },
+            body: JSON.stringify(formData)
+        })
+
+        dispatch(updateUserSuccess(json))
+
+        if (typeof onSuccess === 'function') {
+            onSuccess()
+        }
+    } catch (error) {
+        const message = error?.message || 'Неизвестная ошибка'
+        dispatch(authError({ message }))
+
+        // retry
+        if (message === 'jwt expired') {
+            dispatch(refresh({
+                endpoint: '/auth/token',
+                onSuccess: () => {
+                    dispatch(updateUser({ endpoint, formData, onSuccess }))
+                }
+            }))
+        }
     }
 }
 

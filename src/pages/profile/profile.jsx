@@ -1,9 +1,43 @@
-import { EmailInput, Input, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components'
+import { Button, EmailInput, Input, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components'
 import styles from './profile.module.css'
 import cn from 'classnames'
 import { Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect, useState } from 'react'
+import { getUser, updateUser } from '../../services/slices/auth'
 
 const ProfilePage = () => {
+    const dispatch = useDispatch()
+    const { user, isPending, error } = useSelector(store => store.auth)
+    const [formData, setFormData] = useState(null)
+
+    useEffect(() => {
+        dispatch(getUser({ endpoint: '/auth/user' }))
+    }, [dispatch])
+
+    // sync local state with store
+    useEffect(() => {
+        setFormData(user)
+    }, [user])
+
+    const handleChange = (event) => {
+        setFormData({
+            ...formData,
+            [event.target.name]: event.target.value
+        })
+    }
+
+    const handleSubmit = (event) => {
+        event.preventDefault()
+        dispatch(updateUser({ endpoint: '/auth/user', formData }))
+    }
+
+    const handleCancel = () => {
+        setFormData(user)
+    }
+
+    const cancelButtonDisabled = user?.name === formData?.name && user?.email === formData?.email
+    const saveButtonDisabled = isPending || cancelButtonDisabled
 
     return (
         <main className={cn(styles.profile, 'mt-30')}>
@@ -16,23 +50,24 @@ const ProfilePage = () => {
                     В этом разделе вы можете изменить свои персональные данные
                 </p>
             </section>
-            <section className={styles.form}>
+            {formData && <form className={styles.form} onSubmit={handleSubmit}>
                 <Input
                     type={'text'}
                     placeholder={'Имя'}
                     name={'name'}
-                    value={'Марк'}
+                    value={formData.name}
                     required={true}
                     icon='EditIcon'
-                    isIcon={true}
+                    onChange={handleChange}
                 />
                 <EmailInput
                     placeholder={'Логин'}
-                    name={'login'}
+                    name={'email'}
                     extraClass="mt-6"
-                    value={'mail@stellar.burgers'}
+                    value={formData.email}
                     required={true}
                     isIcon={true}
+                    onChange={handleChange}
                 />
                 <PasswordInput
                     name={'password'}
@@ -42,7 +77,14 @@ const ProfilePage = () => {
                     required={true}
                     icon='EditIcon'
                 />
-            </section>
+                <Button disabled={saveButtonDisabled} htmlType="submit" type="primary" size="large" extraClass="mt-6">
+                    Сохранить
+                </Button>
+                <Button disabled={cancelButtonDisabled} htmlType="button" type="primary" size="large" extraClass="mt-6 ml-6" onClick={handleCancel}>
+                    Отмена
+                </Button>
+                {error && <p className="text_type_main-default error">{error}</p>}
+            </form>}
         </main>
     )
 }
