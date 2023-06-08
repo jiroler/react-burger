@@ -23,7 +23,8 @@ const constructorSchema = {
 
 export const ECookie = {
     refreshToken: 'refreshToken',
-    accessToken: 'accessToken'
+    accessToken: 'accessToken',
+    isResetRequested: 'isResetRequested'
 }
 
 export const ingredientItemType = PropTypes.exact(ingredientSchema)

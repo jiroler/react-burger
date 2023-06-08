@@ -2,6 +2,8 @@ import { Button, EmailInput } from '@ya.praktikum/react-developer-burger-ui-comp
 import { useCallback, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { request } from '../../utils/api'
+import cookies from 'js-cookie'
+import { ECookie } from '../../utils/types'
 
 const ForgotPasswordPage = () => {
 
@@ -18,6 +20,8 @@ const ForgotPasswordPage = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email })
             })
+
+            cookies.set(ECookie.isResetRequested, true)
 
             setIsPending(false)
 

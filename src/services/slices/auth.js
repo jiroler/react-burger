@@ -15,13 +15,11 @@ const authSlice = createSlice({
             state.isPending = true
             state.error = null
         },
-        registerSuccess: (state, action) => {
+        registerSuccess: (state) => {
             state.isPending = false
-            state.user = action.payload.user
         },
-        loginSuccess: (state, action) => {
+        loginSuccess: (state) => {
             state.isPending = false
-            state.user = action.payload.user
         },
         refreshSuccess: (state) => {
             state.isPending = false
@@ -30,7 +28,7 @@ const authSlice = createSlice({
             state.isPending = false
             state.user = null
         },
-        getUserSuccess: (state, action) => {
+        authSuccess: (state, action) => {
             state.isPending = false
             state.user = action.payload.user
         },
@@ -41,11 +39,12 @@ const authSlice = createSlice({
         authError: (state, action) => {
             state.isPending = false
             state.error = action.payload.message
+            state.user = null
         }
     }
 })
 
-const { authRequest, authError, registerSuccess, loginSuccess, refreshSuccess, logoutSuccess, getUserSuccess, updateUserSuccess } = authSlice.actions
+const { authRequest, authError, registerSuccess, loginSuccess, refreshSuccess, logoutSuccess, authSuccess, updateUserSuccess } = authSlice.actions
 
 export const register = ({ endpoint, formData, onSuccess }) => async (dispatch, getState) => {
     try {
@@ -150,7 +149,7 @@ export const logout = ({ endpoint, onSuccess }) => async (dispatch, getState) =>
     }
 }
 
-export const getUser = ({ endpoint, onSuccess }) => async (dispatch, getState) => {
+export const auth = ({ endpoint, onSuccess, onError }) => async (dispatch, getState) => {
     try {
         if (getState().auth.isPending) return
 
@@ -159,7 +158,7 @@ export const getUser = ({ endpoint, onSuccess }) => async (dispatch, getState) =
             headers: { authorization: cookies.get(ECookie.accessToken) }
         })
 
-        dispatch(getUserSuccess(json))
+        dispatch(authSuccess(json))
 
         if (typeof onSuccess === 'function') {
             onSuccess()
@@ -173,9 +172,13 @@ export const getUser = ({ endpoint, onSuccess }) => async (dispatch, getState) =
             dispatch(refresh({
                 endpoint: '/auth/token',
                 onSuccess: () => {
-                    dispatch(getUser({ endpoint, onSuccess }))
+                    dispatch(auth({ endpoint, onSuccess, onError }))
                 }
             }))
+        } else {
+            if (typeof onError === 'function') {
+                onError()
+            }
         }
     }
 }
@@ -214,5 +217,7 @@ export const updateUser = ({ endpoint, formData, onSuccess }) => async (dispatch
         }
     }
 }
+
+export const isAuthSelector = store => store.auth.user !== null
 
 export default authSlice.reducer

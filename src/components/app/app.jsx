@@ -7,6 +7,7 @@ import RegisterPage from '../../pages/register/register'
 import ForgotPasswordPage from '../../pages/forgot-password/forgot-password'
 import ResetPasswordPage from '../../pages/reset-password/reset-password'
 import ProfilePage from '../../pages/profile/profile'
+import ProtectedRouteElement from '../../hocs/protected-route-element/protected-route-element'
 
 const App = () => {
     return (
@@ -14,12 +15,13 @@ const App = () => {
             <BrowserRouter>
                 <AppHeader/>
                 <Routes>
-                    <Route path="/" element={<MainPage />}/>
-                    <Route path="/login" element={<LoginPage />}/>
-                    <Route path="/register" element={<RegisterPage />}/>
-                    <Route path="/forgot-password" element={<ForgotPasswordPage />}/>
-                    <Route path="/reset-password" element={<ResetPasswordPage />}/>
-                    <Route path="/profile" element={<ProfilePage />}/>
+                    <Route path="/" element={<ProtectedRouteElement element={<MainPage />}/> }/>
+                    <Route path="/profile" element={<ProtectedRouteElement element={<ProfilePage />}/> }/>
+
+                    <Route path="/login" element={<ProtectedRouteElement element={<LoginPage /> } reverse/> }/>
+                    <Route path="/register" element={<ProtectedRouteElement element={<RegisterPage />} reverse/> }/>
+                    <Route path="/forgot-password" element={<ProtectedRouteElement element={<ForgotPasswordPage />} reverse/> }/>
+                    <Route path="/reset-password" element={<ProtectedRouteElement element={<ResetPasswordPage />} reverse/> }/>
                 </Routes>
             </BrowserRouter>
         </>

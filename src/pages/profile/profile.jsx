@@ -4,7 +4,7 @@ import cn from 'classnames'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
-import { getUser, updateUser } from '../../services/slices/auth'
+import { auth, updateUser } from '../../services/slices/auth'
 
 const ProfilePage = () => {
     const dispatch = useDispatch()
@@ -12,7 +12,7 @@ const ProfilePage = () => {
     const [formData, setFormData] = useState(null)
 
     useEffect(() => {
-        dispatch(getUser({ endpoint: '/auth/user' }))
+        dispatch(auth({ endpoint: '/auth/user' }))
     }, [dispatch])
 
     // sync local state with store

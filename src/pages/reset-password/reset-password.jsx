@@ -1,7 +1,9 @@
 import { Button, Input, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components'
 import { useCallback, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { request } from '../../utils/api'
+import cookies from 'js-cookie'
+import { ECookie } from '../../utils/types'
 
 const ResetPasswordPage = () => {
     const [formData, setFormData] = useState({ password: '', token: '' })
@@ -20,6 +22,7 @@ const ResetPasswordPage = () => {
 
             setIsPending(false)
 
+            cookies.remove(ECookie.isResetRequested)
         } catch (error) {
             setError(error?.message || 'Ошибка загрузки')
             setIsPending(false)
@@ -36,6 +39,10 @@ const ResetPasswordPage = () => {
     const handleSubmit = (event) => {
         event.preventDefault()
         fetchResetConfirm(formData)
+    }
+
+    if (! cookies.get(ECookie.isResetRequested)) {
+        return <Navigate to='/forgot-password' replace />
     }
 
     return (
