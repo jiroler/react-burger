@@ -11,6 +11,7 @@ import ingredientDetails from './services/slices/ingredient-details'
 import order from './services/slices/order'
 import auth from './services/slices/auth'
 import { Provider } from 'react-redux'
+import { BrowserRouter } from 'react-router-dom'
 
 const store = configureStore({
     reducer: {
@@ -28,7 +29,9 @@ const root = ReactDOM.createRoot(
 root.render(
     <React.StrictMode>
         <Provider store={store}>
-            <App />
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
         </Provider>
     </React.StrictMode>
 )

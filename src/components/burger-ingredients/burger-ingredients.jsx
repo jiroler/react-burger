@@ -1,12 +1,11 @@
 import styles from './burger-ingredients.module.css'
 import cn from 'classnames'
-import Modal from '../modal/modal'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import IngredientDetails from './ingredient-details/ingredient-details'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Tabs from './tabs/tabs'
 import TabGroup from './tab-group/tab-group'
-import { useDispatch, useSelector } from 'react-redux'
-import { clearIngredientDetails, setIngredientDetails } from '../../services/slices/ingredient-details'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { setIngredientDetails } from '../../services/slices/ingredient-details'
+import { useDispatch } from 'react-redux'
 
 const tabs = [
     { type: 'bun', name: 'Булки' },
@@ -18,22 +17,13 @@ const BurgerIngredients = () => {
     const [activeTab, setActiveTab] = useState(tabs[0].type)
 
     const dispatch = useDispatch()
-    const modalItem = useSelector(store => store.ingredientDetails.item)
-
-    const closeModal = useCallback(() => {
-        dispatch(clearIngredientDetails())
-    }, [dispatch])
+    const navigate = useNavigate()
+    const location = useLocation()
 
     const handleIngredientClick = useCallback(item => {
         dispatch(setIngredientDetails({ item }))
-    }, [dispatch])
-
-    const modal = useMemo(() => (
-        modalItem &&
-            <Modal title="Детали ингредиента" handleClose={closeModal}>
-                <IngredientDetails item={modalItem}/>
-            </Modal>
-    ), [modalItem, closeModal])
+        navigate(`/ingredients/${item._id}`, { state: { previousLocation: location } })
+    }, [dispatch, navigate])
 
     const containerRef = useRef(null)
     const tabGroupRefs = useRef(tabs.reduce((acc, tab) => {
@@ -92,8 +82,6 @@ const BurgerIngredients = () => {
                     />
                 ))}
             </div>
-
-            {modal}
         </section>
     )
 }

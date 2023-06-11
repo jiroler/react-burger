@@ -1,13 +1,16 @@
 import { useEffect, useRef } from 'react'
 import styles from './ingredient-details.module.css'
 import cn from 'classnames'
-import { ingredientItemType } from '../../../utils/types'
+import { useSelector } from 'react-redux'
 
-const IngredientDetails = ({ item }) => {
+const IngredientDetails = () => {
     const imageRef = useRef()
+    const item = useSelector(store => store.ingredientDetails.item)
 
     // Prevent modal jump due to image loading
     useEffect(() => {
+        if (! item) return
+
         const onLoad = event => event.target.classList.remove(styles.fixedImageHeight)
         const imageNode = imageRef.current
 
@@ -16,7 +19,9 @@ const IngredientDetails = ({ item }) => {
         return () => {
             imageNode.removeEventListener('load', onLoad)
         }
-    }, [])
+    }, [item])
+
+    if (! item) return null
 
     return (
         <div className={cn(styles.body, 'pb-15')}>
@@ -43,10 +48,6 @@ const IngredientDetails = ({ item }) => {
             </ul>
         </div>
     )
-}
-
-IngredientDetails.propTypes = {
-    item: ingredientItemType
 }
 
 export default IngredientDetails
