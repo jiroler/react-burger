@@ -1,12 +1,13 @@
 import { Button, EmailInput, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { login } from '../../services/slices/auth'
 
 const LoginPage = () => {
     const [formData, setFormData] = useState({ email: '', password: '' })
     const dispatch = useDispatch()
+    const location = useLocation()
     const navigate = useNavigate()
     const { error, isPending } = useSelector(store => store.auth)
 
@@ -24,7 +25,7 @@ const LoginPage = () => {
             endpoint: '/auth/login',
             formData,
             onSuccess: () => {
-                navigate('/')
+                navigate(`${location.state?.from || '/'}`)
             }
         }))
     }

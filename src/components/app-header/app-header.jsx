@@ -9,8 +9,8 @@ const AppHeader = memo(() => {
             <nav className={styles.nav}>
 
                 <span className={styles.left}>
-                    <MenuItem path={'/'} icon={BurgerIcon} active>Конструктор</MenuItem>
-                    <MenuItem path={'/profile/orders'} icon={ListIcon}>Лента заказов</MenuItem>
+                    <MenuItem path={'/'} icon={BurgerIcon}>Конструктор</MenuItem>
+                    <MenuItem path={'/feed'} icon={ListIcon}>Лента заказов</MenuItem>
                 </span>
 
                 <Logo/>

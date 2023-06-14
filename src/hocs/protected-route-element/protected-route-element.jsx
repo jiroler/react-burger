@@ -1,9 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { auth, isAuthSelector } from '../../services/slices/auth'
 import { useEffect, useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 
 const ProtectedRouteElement = ({ element, reverse }) => {
+    const location = useLocation()
     const dispatch = useDispatch()
     const isAuth = useSelector(isAuthSelector)
     const [isUserLoaded, setUserLoaded] = useState(false)
@@ -30,7 +31,7 @@ const ProtectedRouteElement = ({ element, reverse }) => {
             : element
         : isAuth
             ? element
-            : <Navigate to="/login" replace/>
+            : <Navigate to="/login" replace state={{ from: location.pathname }}/>
 }
 
 export default ProtectedRouteElement

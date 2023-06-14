@@ -10,9 +10,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { makeOrder } from '../../services/slices/order'
 import { useDrop } from 'react-dnd'
 import { addIngredientToConstructor } from '../../services/slices/burger-constructor'
+import { auth } from '../../services/slices/auth'
+import { useNavigate } from 'react-router-dom'
 
 const BurgerConstructor = () => {
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const { bun, components } = useSelector(store => store.burgerConstructor)
     const { number, error } = useSelector(store => store.order)
     const [isModalVisible, openModal, closeModal] = useModal()
@@ -20,7 +23,15 @@ const BurgerConstructor = () => {
     const ingredients = components.map(item => item._id).concat(bun?._id || [])
 
     const handleOrder = () => {
-        dispatch(makeOrder({ endpoint: '/orders', ingredients, onSuccess: openModal }))
+        dispatch(auth({
+            endpoint: '/auth/user',
+            onSuccess: () => {
+                dispatch(makeOrder({ endpoint: '/orders', ingredients, onSuccess: openModal }))
+            },
+            onError: () => {
+                navigate('/login')
+            }
+        }))
     }
 
     const modal = useMemo(() => (

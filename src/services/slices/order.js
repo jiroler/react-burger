@@ -1,6 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { clearConstructor } from './burger-constructor'
 import { request } from '../../utils/api'
+import cookies from 'js-cookie'
+import { ECookie } from '../../utils/types'
 
 const orderSlice = createSlice({
     name: 'order',
@@ -37,7 +39,7 @@ export const makeOrder = ({ endpoint, ingredients, onSuccess }) => async (dispat
         dispatch(makeOrderRequest())
         const json = await request(endpoint, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', authorization: cookies.get(ECookie.accessToken) },
             body: JSON.stringify({ ingredients })
         })
 
