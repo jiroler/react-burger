@@ -2,7 +2,7 @@ import { memo } from 'react'
 import styles from './order-summary.module.css'
 import cn from 'classnames'
 import { CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components'
-import { func } from 'prop-types'
+import { bool, func } from 'prop-types'
 import { useSelector } from 'react-redux'
 import ButtonWithPending from '../../button-with-pending/button-with-pending'
 
@@ -27,7 +27,8 @@ const OrderSummary = memo(({ handleOrder, isPending }) => {
 })
 
 OrderSummary.propTypes = {
-    handleOrder: func.isRequired
+    handleOrder: func.isRequired,
+    isPending: bool
 }
 
 export default OrderSummary

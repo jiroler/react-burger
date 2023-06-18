@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import styles from './error.module.css'
 import cn from 'classnames'
+import { number, string } from 'prop-types'
 
 const ErrorPage = ({ code, message }) => {
     return (
@@ -11,6 +12,11 @@ const ErrorPage = ({ code, message }) => {
             <Link to="/" className="text text_type_main-default mt-10">← Back to Home</Link>
         </section>
     )
+}
+
+ErrorPage.propTypes = {
+    code: number,
+    message: string
 }
 
 export default ErrorPage

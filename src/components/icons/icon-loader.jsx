@@ -1,3 +1,4 @@
+import { string } from 'prop-types'
 import { memo } from 'react'
 
 const IconLoader = memo(({ extraClass }) => {
@@ -8,5 +9,9 @@ const IconLoader = memo(({ extraClass }) => {
         </svg>
     )
 })
+
+IconLoader.propTypes = {
+    extraClass: string
+}
 
 export default IconLoader

@@ -36,7 +36,7 @@ const App = () => {
 
                 <Route path="/ingredients/:id" element={<IngredientDetailsPage />} />
 
-                <Route path="*" element={<ErrorPage code='404' message='Not Found'/>}/>
+                <Route path="*" element={<ErrorPage code={404} message='Not Found'/>}/>
             </Routes>
 
             {previousLocation && <ModalRoutes/>}
