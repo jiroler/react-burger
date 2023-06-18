@@ -1,7 +1,7 @@
 import styles from './burger-constructor.module.css'
 import cn from 'classnames'
 import useModal from '../../hooks/use-modal'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import Modal from '../modal/modal'
 import OrderDetails from './order-details/order-details'
 import ConstructorItem from './constructor-item/constructor-item'
@@ -12,26 +12,27 @@ import { useDrop } from 'react-dnd'
 import { addIngredientToConstructor } from '../../services/slices/burger-constructor'
 import { auth } from '../../services/slices/auth'
 import { useNavigate } from 'react-router-dom'
+import Preloader from '../preloader/preloader'
 
 const BurgerConstructor = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const { bun, components } = useSelector(store => store.burgerConstructor)
-    const { number, error } = useSelector(store => store.order)
+    const { isPending, number, error } = useSelector(store => store.order)
     const [isModalVisible, openModal, closeModal] = useModal()
 
     const ingredients = components.map(item => item._id).concat(bun?._id || [])
 
+    const { user, isAuthChecked } = useSelector(store => store.auth)
+
+    useEffect(() => {
+        ! isAuthChecked && dispatch(auth())
+    }, [dispatch])
+
     const handleOrder = () => {
-        dispatch(auth({
-            endpoint: '/auth/user',
-            onSuccess: () => {
-                dispatch(makeOrder({ endpoint: '/orders', ingredients, onSuccess: openModal }))
-            },
-            onError: () => {
-                navigate('/login')
-            }
-        }))
+        user
+            ? dispatch(makeOrder({ endpoint: '/orders', ingredients, onSuccess: openModal }))
+            : navigate('/login')
     }
 
     const modal = useMemo(() => (
@@ -58,6 +59,8 @@ const BurgerConstructor = () => {
         return components.findIndex(item => item.uuid === uuid)
     }, [components])
 
+    if (! isAuthChecked) return <Preloader/>
+
     return (
         <section className='pt-25 pl-4'>
             <div ref={dropTarget} className={cn(
@@ -82,7 +85,7 @@ const BurgerConstructor = () => {
                 />}
             </div>
 
-            <OrderSummary handleOrder={handleOrder}/>
+            <OrderSummary handleOrder={handleOrder} isPending={isPending}/>
 
             {error && <p className={cn(styles.error, 'text text_type_main-medium p-4')}>{error}</p>}
 

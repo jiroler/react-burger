@@ -1,41 +1,25 @@
-import { Button, EmailInput, Input, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components'
+import { EmailInput, Input, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components'
 import styles from './profile.module.css'
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect, useState } from 'react'
-import { auth, updateUser } from '../../services/slices/auth'
+import useFormData from '../../hooks/use-form-data'
+import { update } from '../../services/slices/auth'
+import ButtonWithPending from '../../components/button-with-pending/button-with-pending'
 
 const ProfilePage = () => {
     const dispatch = useDispatch()
-    const { user, isPending, error } = useSelector(store => store.auth)
-    const [formData, setFormData] = useState(null)
+    const { user, isUpdatePending, updateError } = useSelector(store => store.auth)
 
-    useEffect(() => {
-        dispatch(auth({ endpoint: '/auth/user' }))
-    }, [dispatch])
-
-    // sync local state with store
-    useEffect(() => {
-        setFormData(user)
-    }, [user])
-
-    const handleChange = (event) => {
-        setFormData({
-            ...formData,
-            [event.target.name]: event.target.value
-        })
+    const fetchUpdate = (formData) => {
+        dispatch(update({ endpoint: '/auth/user', formData, onSuccess: cancelEdit }))
     }
 
-    const handleSubmit = (event) => {
-        event.preventDefault()
-        dispatch(updateUser({ endpoint: '/auth/user', formData }))
+    const { formData, setFormData, handleChange, handleSubmit } = useFormData({ name: user.name, email: user.email, password: '' }, fetchUpdate)
+
+    const cancelEdit = () => {
+        setFormData({ ...user, password: '' })
     }
 
-    const handleCancel = () => {
-        setFormData(user)
-    }
-
-    const cancelButtonDisabled = user?.name === formData?.name && user?.email === formData?.email
-    const saveButtonDisabled = isPending || cancelButtonDisabled
+    const buttonsEnabled = user?.name !== formData?.name || user?.email !== formData?.email || formData.password
 
     return (
         <>
@@ -62,17 +46,22 @@ const ProfilePage = () => {
                     name={'password'}
                     placeholder={'Введите новый пароль'}
                     extraClass="mt-6"
-                    value={'******'}
+                    value={formData.password}
                     required={true}
                     icon='EditIcon'
+                    onChange={handleChange}
                 />
-                <Button disabled={saveButtonDisabled} htmlType="submit" type="primary" size="large" extraClass="mt-6">
+                {buttonsEnabled && (
+                    <>
+                        <ButtonWithPending isPending={isUpdatePending} htmlType="submit" type="primary" size="large" extraClass="mt-6">
                     Сохранить
-                </Button>
-                <Button disabled={cancelButtonDisabled} htmlType="button" type="primary" size="large" extraClass="mt-6 ml-6" onClick={handleCancel}>
+                        </ButtonWithPending>
+                        <ButtonWithPending isPending={isUpdatePending} htmlType="button" type="primary" size="large" extraClass="mt-6 ml-6" onClick={cancelEdit}>
                     Отмена
-                </Button>
-                {error && <p className="text_type_main-default error">{error}</p>}
+                        </ButtonWithPending>
+                    </>
+                )}
+                {updateError && <p className="text_type_main-default error">{updateError}</p>}
             </form>}
         </>
     )

@@ -14,7 +14,7 @@ code {
 }
 
 .auth-form {
-    margin: 180px auto 180px;
+    margin: 180px auto 50px;
     width: 480px;
     display: flex;
     flex-direction: column;

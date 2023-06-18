@@ -1,7 +1,6 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import ingredients from './slices/ingredients'
 import burgerConstructor from './slices/burger-constructor'
-import ingredientDetails from './slices/ingredient-details'
 import order from './slices/order'
 import auth from './slices/auth'
 import storage from 'redux-persist/lib/storage'
@@ -17,7 +16,6 @@ const persistedReducer = persistReducer(persistConfig, combineReducers({
     auth,
     ingredients,
     burgerConstructor,
-    ingredientDetails,
     order
 }))
 

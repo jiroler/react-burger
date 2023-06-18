@@ -4,8 +4,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import Tabs from './tabs/tabs'
 import TabGroup from './tab-group/tab-group'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { setIngredientDetails } from '../../services/slices/ingredient-details'
-import { useDispatch } from 'react-redux'
 
 const tabs = [
     { type: 'bun', name: 'Булки' },
@@ -16,14 +14,12 @@ const tabs = [
 const BurgerIngredients = () => {
     const [activeTab, setActiveTab] = useState(tabs[0].type)
 
-    const dispatch = useDispatch()
     const navigate = useNavigate()
     const location = useLocation()
 
     const handleIngredientClick = useCallback(item => {
-        dispatch(setIngredientDetails({ item }))
         navigate(`/ingredients/${item._id}`, { state: { previousLocation: location } })
-    }, [dispatch, navigate])
+    }, [navigate, location])
 
     const containerRef = useRef(null)
     const tabGroupRefs = useRef(tabs.reduce((acc, tab) => {

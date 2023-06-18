@@ -2,10 +2,12 @@ import { useEffect, useRef } from 'react'
 import styles from './ingredient-details.module.css'
 import cn from 'classnames'
 import { useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
 
 const IngredientDetails = () => {
     const imageRef = useRef()
-    const item = useSelector(store => store.ingredientDetails.item)
+    const params = useParams()
+    const item = useSelector(store => store.ingredients.items?.find(item => item._id === params.id) || null)
 
     // Prevent modal jump due to image loading
     useEffect(() => {

@@ -1,32 +1,26 @@
-import { Button, EmailInput, Input, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components'
-import { useState } from 'react'
+import { EmailInput, Input, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { register } from '../../services/slices/auth'
+import ButtonWithPending from '../../components/button-with-pending/button-with-pending'
+import useFormData from '../../hooks/use-form-data'
 
 const RegisterPage = () => {
-    const [formData, setFormData] = useState({ name: '', email: '', password: '' })
     const dispatch = useDispatch()
-    const { error, isPending } = useSelector(store => store.auth)
+    const navigate = useNavigate()
+    const location = useLocation()
+    const { registerError, isRegisterPending } = useSelector(store => store.auth)
 
-    const handleChange = (event) => {
-        setFormData({
-            ...formData,
-            [event.target.name]: event.target.value
-        })
-    }
-
-    const handleSubmit = (event) => {
-        event.preventDefault()
-
+    const fetchRegister = (formData) => {
         dispatch(register({
-            endpoint: '/auth/register',
             formData,
             onSuccess: () => {
-                alert('success!')
+                navigate(location.state?.from || '/', { replace: true })
             }
         }))
     }
+
+    const { formData, handleChange, handleSubmit } = useFormData({ name: '', email: '', password: '' }, fetchRegister)
 
     return (
         <form className="auth-form" onSubmit={handleSubmit}>
@@ -48,14 +42,15 @@ const RegisterPage = () => {
             />
             <PasswordInput
                 name={'password'}
+                autoComplete="on"
                 extraClass="mt-6"
                 value={formData.password}
                 onChange={handleChange}
             />
-            <Button disabled={isPending} htmlType="submit" type="primary" size="large" extraClass="mt-6">
+            <ButtonWithPending isPending={isRegisterPending} htmlType="submit" type="primary" size="large" extraClass="mt-6">
                 Зарегистрироваться
-            </Button>
-            {error && <p className="text_type_main-default error">{error}</p>}
+            </ButtonWithPending>
+            {registerError && <p className="text_type_main-default error">{registerError}</p>}
             <p className="text text_type_main-default mt-20 text_color_inactive">
                 Уже зарегистрированы? <Link to='/login' className='text_color_accent'>Войти</Link>
             </p>

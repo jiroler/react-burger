@@ -1,34 +1,26 @@
-import { Button, EmailInput, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components'
-import { useState } from 'react'
+import { EmailInput, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { login } from '../../services/slices/auth'
+import ButtonWithPending from '../../components/button-with-pending/button-with-pending'
+import useFormData from '../../hooks/use-form-data'
 
 const LoginPage = () => {
-    const [formData, setFormData] = useState({ email: '', password: '' })
     const dispatch = useDispatch()
     const location = useLocation()
     const navigate = useNavigate()
-    const { error, isPending } = useSelector(store => store.auth)
+    const { loginError, isLoginPending } = useSelector(store => store.auth)
 
-    const handleChange = (event) => {
-        setFormData({
-            ...formData,
-            [event.target.name]: event.target.value
-        })
-    }
-
-    const handleSubmit = (event) => {
-        event.preventDefault()
-
+    const fetchLogin = (formData) => {
         dispatch(login({
-            endpoint: '/auth/login',
             formData,
             onSuccess: () => {
-                navigate(`${location.state?.from || '/'}`)
+                navigate(location.state?.from || '/', { replace: true })
             }
         }))
     }
+
+    const { formData, handleChange, handleSubmit } = useFormData({ email: '', password: '' }, fetchLogin)
 
     return (
         <form className="auth-form" onSubmit={handleSubmit}>
@@ -46,10 +38,10 @@ const LoginPage = () => {
                 extraClass="mt-6"
                 onChange={handleChange}
             />
-            <Button disabled={isPending} htmlType="submit" type="primary" size="large" extraClass="mt-6">
+            <ButtonWithPending isPending={isLoginPending} htmlType="submit" type="primary" size="large" extraClass="mt-6">
                 Войти
-            </Button>
-            {error && <p className="text_type_main-default error">{error}</p>}
+            </ButtonWithPending>
+            {loginError && <p className="text_type_main-default error">{loginError}</p>}
             <p className="text text_type_main-default mb-4 mt-20 text_color_inactive">
                 Вы - новый пользователь? <Link to='/register' className='text_color_accent'>Зарегистрироваться</Link>
             </p>
