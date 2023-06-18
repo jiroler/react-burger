@@ -11,7 +11,7 @@ const ProtectedRouteElement = ({ element, reverse }) => {
     const { user, isAuthChecked } = useSelector(store => store.auth)
 
     useEffect(() => {
-        dispatch(auth())
+        ! isAuthChecked && dispatch(auth())
     }, [dispatch])
 
     if (! isAuthChecked) return <Preloader/>
@@ -22,7 +22,7 @@ const ProtectedRouteElement = ({ element, reverse }) => {
             : <Navigate to="/login" replace state={{ from: location.pathname }}/>
     } else {
         return user
-            ? <Navigate to="/" replace/>
+            ? <Navigate to={location.state?.from || '/'} replace/>
             : element
     }
 }

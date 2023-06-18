@@ -10,12 +10,19 @@ const ProfilePage = () => {
     const { user, isUpdatePending, updateError } = useSelector(store => store.auth)
 
     const fetchUpdate = (formData) => {
-        dispatch(update({ endpoint: '/auth/user', formData, onSuccess: cancelEdit }))
+        dispatch(update({ endpoint: '/auth/user',
+            formData,
+            onSuccess: () => {
+                setFormData({
+                    ...formData,
+                    password: ''
+                })
+            } }))
     }
 
     const { formData, setFormData, handleChange, handleSubmit } = useFormData({ name: user.name, email: user.email, password: '' }, fetchUpdate)
 
-    const cancelEdit = () => {
+    const handleCancel = () => {
         setFormData({ ...user, password: '' })
     }
 
@@ -56,7 +63,7 @@ const ProfilePage = () => {
                         <ButtonWithPending isPending={isUpdatePending} htmlType="submit" type="primary" size="large" extraClass="mt-6">
                     Сохранить
                         </ButtonWithPending>
-                        <ButtonWithPending isPending={isUpdatePending} htmlType="button" type="primary" size="large" extraClass="mt-6 ml-6" onClick={cancelEdit}>
+                        <ButtonWithPending isPending={isUpdatePending} htmlType="button" type="primary" size="large" extraClass="mt-6 ml-6" onClick={handleCancel}>
                     Отмена
                         </ButtonWithPending>
                     </>

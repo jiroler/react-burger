@@ -1,7 +1,7 @@
 import styles from './profile-root.module.css'
 import cn from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { logout } from '../../services/slices/auth'
 import Preloader from '../../components/preloader/preloader'
 
@@ -11,7 +11,6 @@ const setActiveLink = ({ isActive }) => cn('text', { text_color_inactive: ! isAc
 const ProfileRootPage = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const location = useLocation()
 
     const { isLogoutPending, logoutError } = useSelector(store => store.auth)
 
@@ -20,7 +19,7 @@ const ProfileRootPage = () => {
 
         dispatch(logout({
             onSuccess: () => {
-                navigate('/login', { replace: true, state: { from: location.pathname } })
+                navigate('/login', { replace: true })
             }
         }))
     }
