@@ -9,14 +9,14 @@ const AppHeader = memo(() => {
             <nav className={styles.nav}>
 
                 <span className={styles.left}>
-                    <MenuItem icon={BurgerIcon} active>Конструктор</MenuItem>
-                    <MenuItem icon={ListIcon}>Лента заказов</MenuItem>
+                    <MenuItem path={'/'} icon={BurgerIcon}>Конструктор</MenuItem>
+                    <MenuItem path={'/feed'} icon={ListIcon}>Лента заказов</MenuItem>
                 </span>
 
                 <Logo/>
 
                 <span className={styles.right}>
-                    <MenuItem icon={ProfileIcon}>Личный кабинет</MenuItem>
+                    <MenuItem path={'/profile'} icon={ProfileIcon}>Личный кабинет</MenuItem>
                 </span>
 
             </nav>

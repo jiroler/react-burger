@@ -4,21 +4,13 @@ import './index.css'
 
 import reportWebVitals from './reportWebVitals'
 import App from './components/app/app'
-import { configureStore } from '@reduxjs/toolkit'
-import ingredients from './services/slices/ingredients'
-import burgerConstructor from './services/slices/burger-constructor'
-import ingredientDetails from './services/slices/ingredient-details'
-import order from './services/slices/order'
 import { Provider } from 'react-redux'
+import { BrowserRouter } from 'react-router-dom'
+import { persistStore } from 'redux-persist'
+import { PersistGate } from 'redux-persist/integration/react'
+import { store } from './services/store'
 
-const store = configureStore({
-    reducer: {
-        ingredients,
-        burgerConstructor,
-        ingredientDetails,
-        order
-    }
-})
+const persistor = persistStore(store)
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -26,7 +18,11 @@ const root = ReactDOM.createRoot(
 root.render(
     <React.StrictMode>
         <Provider store={store}>
-            <App />
+            <PersistGate persistor={persistor}>
+                <BrowserRouter>
+                    <App />
+                </BrowserRouter>
+            </PersistGate>
         </Provider>
     </React.StrictMode>
 )

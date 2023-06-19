@@ -12,3 +12,24 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.auth-form {
+    margin: 180px auto 50px;
+    width: 480px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.error {
+    color: red;
+}
+
+.text {
+    color: #F2F2F3;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}

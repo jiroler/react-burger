@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { clearConstructor } from './burger-constructor'
-import { request } from '../../utils/api'
+import { requestWithToken } from '../../utils/api'
 
 const orderSlice = createSlice({
     name: 'order',
@@ -35,7 +35,7 @@ export const makeOrder = ({ endpoint, ingredients, onSuccess }) => async (dispat
         if (getState().burgerConstructor.components.length === 0) throw new Error('Добавьте ингредиенты')
 
         dispatch(makeOrderRequest())
-        const json = await request(endpoint, {
+        const json = await requestWithToken(endpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ingredients })

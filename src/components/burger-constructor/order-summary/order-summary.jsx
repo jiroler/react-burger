@@ -1,11 +1,12 @@
 import { memo } from 'react'
 import styles from './order-summary.module.css'
 import cn from 'classnames'
-import { Button, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components'
-import { func } from 'prop-types'
+import { CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components'
+import { bool, func } from 'prop-types'
 import { useSelector } from 'react-redux'
+import ButtonWithPending from '../../button-with-pending/button-with-pending'
 
-const OrderSummary = memo(({ handleOrder }) => {
+const OrderSummary = memo(({ handleOrder, isPending }) => {
     const { bun, components } = useSelector(store => store.burgerConstructor)
 
     let totalPrice = components.reduce((acc, component) => acc += component.price, 0)
@@ -18,15 +19,16 @@ const OrderSummary = memo(({ handleOrder }) => {
             <p className="text text_type_digits-medium">
                 {totalPrice} <CurrencyIcon type="primary"/>
             </p>
-            <Button htmlType="button" type="primary" size="medium" onClick={handleOrder}>
+            <ButtonWithPending isPending={isPending} htmlType="button" type="primary" size="medium" onClick={handleOrder}>
                 Оформить заказ
-            </Button>
+            </ButtonWithPending>
         </div>
     )
 })
 
 OrderSummary.propTypes = {
-    handleOrder: func.isRequired
+    handleOrder: func.isRequired,
+    isPending: bool
 }
 
 export default OrderSummary

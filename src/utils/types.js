@@ -21,5 +21,11 @@ const constructorSchema = {
     uuid: PropTypes.string
 }
 
+export const ECookie = {
+    refreshToken: 'refreshToken',
+    accessToken: 'accessToken',
+    isResetRequested: 'isResetRequested'
+}
+
 export const ingredientItemType = PropTypes.exact(ingredientSchema)
 export const constructorItemType = PropTypes.exact(constructorSchema)

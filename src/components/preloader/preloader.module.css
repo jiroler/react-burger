@@ -1,0 +1,15 @@
+.spin {
+    animation: spin 0.75s linear infinite;
+}
+
+.preloader {
+    height: 200px;
+    display: flex;
+    justify-content: center;
+}
+
+@keyframes spin { 
+    100% { 
+        transform: rotate(360deg); 
+    } 
+}
