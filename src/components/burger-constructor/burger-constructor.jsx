@@ -21,13 +21,17 @@ const BurgerConstructor = () => {
     const { isPending, number, error } = useSelector(store => store.order)
     const [isModalVisible, openModal, closeModal] = useModal()
 
-    const ingredients = components.map(item => item._id).concat(bun?._id || [])
+    const ingredients = components.map(item => item._id)
+    if (bun) {
+        ingredients.unshift(bun._id)
+        ingredients.push(bun._id)
+    }
 
     const { user, isAuthChecked } = useSelector(store => store.auth)
 
     useEffect(() => {
         ! isAuthChecked && dispatch(auth())
-    }, [dispatch])
+    }, [isAuthChecked, dispatch])
 
     const handleOrder = () => {
         user

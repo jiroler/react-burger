@@ -12,7 +12,7 @@ const ProtectedRouteElement = ({ element, reverse }) => {
 
     useEffect(() => {
         ! isAuthChecked && dispatch(auth())
-    }, [dispatch])
+    }, [isAuthChecked, dispatch])
 
     if (! isAuthChecked) return <Preloader/>
 
