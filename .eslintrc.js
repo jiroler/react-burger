@@ -1,4 +1,7 @@
 module.exports = {
+    globals: {
+        NodeJS: 'readonly'
+    },
     extends: [
         'eslint:recommended',
         'react-app',
@@ -172,5 +175,18 @@ module.exports = {
         'wrap-iife': ['error', 'any', { functionPrototypeMethods: true }],
         'yield-star-spacing': ['error', 'both'],
         yoda: ['error', 'never']
-    }
+    },
+    overrides: [{
+        files: ['**/*.ts', '**/*.tsx'],
+        parserOptions: {
+            ecmaVersion: 2022,
+            sourceType: 'module',
+            project: './tsconfig.json'
+        },
+        parser: '@typescript-eslint/parser',
+        plugins: ['@typescript-eslint'],
+        rules: {
+            '@typescript-eslint/no-unused-vars': ['error', { vars: 'all', args: 'all', ignoreRestSiblings: true, argsIgnorePattern: '^_' }]
+        }
+    }]
 }
