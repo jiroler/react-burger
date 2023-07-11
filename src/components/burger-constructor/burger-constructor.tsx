@@ -48,13 +48,13 @@ const BurgerConstructor = () => {
     ), [closeModal, number])
 
     // Добавление ингредиента
-    const [{ isOver, canDrop }, dropTarget] = useDrop<{item: TIngredient}, void, {isOver: boolean, canDrop: boolean}>({
+    const [{ isOver, canDrop }, dropTarget] = useDrop({
         accept: 'ingredient',
         collect: monitor => ({
             isOver: monitor.isOver(),
             canDrop: monitor.canDrop()
         }),
-        drop({ item }) {
+        drop: ({ item }: {item: TIngredient}) => {
             dispatch(addIngredientToConstructor({ item }))
         }
     })

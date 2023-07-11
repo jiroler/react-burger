@@ -13,6 +13,8 @@ import ModalRoutes from '../modal-routes/modal-routes'
 import ProfilePage from '../../pages/profile/profile'
 import OrdersPage from '../../pages/orders/orders'
 import ErrorPage from '../../pages/error/error'
+import { FeedPage } from '../../pages/feed/feed'
+import { OrderDetailsPage } from '../../pages/order-details/order-details'
 
 const App = () => {
 
@@ -28,6 +30,7 @@ const App = () => {
                     <Route path="" element={<ProfilePage/>}/>
                     <Route path="orders" element={<OrdersPage/>}/>
                 </Route>
+                <Route path="/profile/orders/:id" element={<ProtectedRouteElement element={<OrderDetailsPage/>}/>}/>
 
                 <Route path="/login" element={<ProtectedRouteElement element={<LoginPage/>} reverse/>}/>
                 <Route path="/register" element={<ProtectedRouteElement element={<RegisterPage/>} reverse/>}/>
@@ -35,6 +38,9 @@ const App = () => {
                 <Route path="/reset-password" element={<ProtectedRouteElement element={<ResetPasswordPage/>} reverse/>}/>
 
                 <Route path="/ingredients/:id" element={<IngredientDetailsPage />} />
+
+                <Route path="/feed" element={<FeedPage/>}/>
+                <Route path="/feed/:id" element={<OrderDetailsPage/>}/>
 
                 <Route path="*" element={<ErrorPage code={404} message='Not Found'/>}/>
             </Routes>

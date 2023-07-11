@@ -4,6 +4,8 @@ import useFormData from '../../hooks/use-form-data'
 import { update } from '../../services/slices/auth'
 import ButtonWithPending from '../../components/button-with-pending/button-with-pending'
 import { useAppDispatch, useAppSelector } from '../../hooks'
+import { useEffect } from 'react'
+import { useProfileHint } from '../../hooks/use-profile-hint'
 
 type TFormData = {
     name: string,
@@ -14,6 +16,12 @@ type TFormData = {
 const ProfilePage = () => {
     const dispatch = useAppDispatch()
     const { user, isUpdatePending, updateError } = useAppSelector(store => store.auth)
+
+    const { setHint } = useProfileHint()
+
+    useEffect(() => {
+        setHint('В этом разделе вы можете изменить свои персональные данные')
+    }, [setHint])
 
     const fetchUpdate = (formData: TFormData) => {
         dispatch(update({

@@ -1,0 +1,60 @@
+.body {
+    width: 640px;
+}
+
+.thumb {
+    position: absolute;
+    background: #131316;
+    border-radius: 100px;
+    width: 60px;
+    height: 60px;
+    top: 2px;
+    left: 2px;
+}
+
+.table {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-height: 312px;
+    overflow-y: overlay;
+}
+
+.row {
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.name {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.gradient {
+    position: relative;
+    border-radius: 100px;
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(45deg, #AB1AB2, #4C4CFF);
+    flex-shrink: 0;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.price {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
