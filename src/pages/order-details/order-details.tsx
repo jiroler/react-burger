@@ -1,16 +1,17 @@
 import styles from './order-details.module.css'
 import cn from 'classnames'
-import { feed } from '../../utils/fake'
 import { OrderDetails } from '../../components/order-details/order-details'
-
-const item = feed.orders[0]
+import { ModalContext, useModalTitle } from '../../hooks/use-modal-title'
 
 export const OrderDetailsPage = () => {
+    const { contextValue, title } = useModalTitle()
 
     return (
-        <div className={styles.wrapper}>
-            <p className={cn(styles.title, 'text text_type_digits-default')}>#{item.number}</p>
-            <OrderDetails item={item}/>
-        </div>
+        <ModalContext.Provider value={contextValue}>
+            <div className={styles.wrapper}>
+                <p className={cn(styles.title, 'text text_type_digits-default')}>{title}</p>
+                <OrderDetails/>
+            </div>
+        </ModalContext.Provider>
     )
 }

@@ -1,13 +1,11 @@
 import { feed } from '../../utils/fake'
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import styles from './order-details.module.css'
 import cn from 'classnames'
 import { OrderStatus } from '../order-status/order-status'
 import { CurrencyIcon, FormattedDate } from '@ya.praktikum/react-developer-burger-ui-components'
-
-type TProps = {
-    item: typeof feed.orders[0]
-}
+import { Navigate, useParams } from 'react-router-dom'
+import { useModalTitle } from '../../hooks/use-modal-title'
 
 type TIngredient = {
     _id: string,
@@ -16,7 +14,7 @@ type TIngredient = {
     count: number
 }
 
-const items: TIngredient[] = [
+const ingredients: TIngredient[] = [
     { _id: '1', name: 'Флюоресцентная булка R2-D3', price: 20, count: 2 },
     { _id: '2', name: 'Филе Люминесцентного тетраодонтимформа традиционный галактический', price: 300, count: 1 },
     { _id: '3', name: 'Соус традиционный галактический', price: 123, count: 1 },
@@ -27,7 +25,17 @@ const items: TIngredient[] = [
     { _id: '8', name: 'Плоды фалленианского дерева', price: 450, count: 1 }
 ]
 
-export const OrderDetails: FC<TProps> = ({ item }) => {
+export const OrderDetails: FC = () => {
+    const params = useParams()
+    const { setModalTitle } = useModalTitle()
+
+    const item = feed.orders.find(order => order._id === params.id)
+
+    useEffect(() => {
+        item && setModalTitle(`#${item.number}`)
+    }, [item, setModalTitle])
+
+    if (! item) return <Navigate to='/404' />
 
     return (
         <div className={styles.body}>
@@ -35,7 +43,7 @@ export const OrderDetails: FC<TProps> = ({ item }) => {
             <OrderStatus status={item.status} />
             <p className='text text_type_main-medium mt-15 mb-6'>Состав:</p>
             <div className={cn(styles.table, 'custom-scroll pr-6')}>
-                {items.map(item => (
+                {ingredients.map(item => (
                     <div key={item._id} className={styles.row}>
                         <div className={styles.item}>
                             <div className={styles.gradient}>
@@ -49,7 +57,7 @@ export const OrderDetails: FC<TProps> = ({ item }) => {
                     </div>
                 ))}
             </div>
-            <div className={cn(styles.footer, 'mt-10')}>
+            <div className={cn(styles.footer, 'mt-10 mb-10')}>
                 <FormattedDate className='text_type_main-default text_color_inactive' date={new Date(item.createdAt)}/>
                 <p className={cn(styles.price, 'text text_type_digits-default')}>
                     {123} <CurrencyIcon type="primary"/>

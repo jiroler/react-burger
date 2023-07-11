@@ -17,7 +17,6 @@ import { FeedPage } from '../../pages/feed/feed'
 import { OrderDetailsPage } from '../../pages/order-details/order-details'
 
 const App = () => {
-
     const location = useLocation()
     const previousLocation = location.state?.previousLocation
 

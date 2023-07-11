@@ -4,7 +4,8 @@ import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { logout } from '../../services/slices/auth'
 import Preloader from '../../components/preloader/preloader'
 import { useAppDispatch, useAppSelector } from '../../hooks'
-import { SyntheticEvent, useMemo, useState } from 'react'
+import { SyntheticEvent } from 'react'
+import { useProfileHint } from '../../hooks/use-profile-hint'
 
 // eslint-disable-next-line camelcase
 const setActiveLink = ({ isActive }: { isActive: boolean }) => cn('text', { text_color_inactive: ! isActive })
@@ -15,10 +16,7 @@ const ProfileRootPage = () => {
 
     const { isLogoutPending, logoutError } = useAppSelector(store => store.auth)
 
-    const [hint, setHint] = useState('')
-    const outletContext = useMemo(() => {
-        return { setHint }
-    }, [setHint])
+    const { hint, contextValue } = useProfileHint()
 
     const handleLogout = (event: SyntheticEvent) => {
         event.preventDefault()
@@ -46,7 +44,7 @@ const ProfileRootPage = () => {
                 </p>
             </section>
             <section>
-                <Outlet context={outletContext}/>
+                <Outlet context={contextValue}/>
             </section>
         </main>
     )
