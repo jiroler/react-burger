@@ -1,11 +1,12 @@
-import { feed } from '../../utils/fake'
 import { FC, useEffect } from 'react'
 import styles from './order-details.module.css'
 import cn from 'classnames'
 import { OrderStatus } from '../order-status/order-status'
 import { CurrencyIcon, FormattedDate } from '@ya.praktikum/react-developer-burger-ui-components'
-import { Navigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useModalTitle } from '../../hooks/use-modal-title'
+import { useAppSelector } from '../../hooks'
+import { getIngredientsMap } from '../../services/slices/ingredients'
 
 type TIngredient = {
     _id: string,
@@ -14,32 +15,39 @@ type TIngredient = {
     count: number
 }
 
-const ingredients: TIngredient[] = [
-    { _id: '1', name: 'Флюоресцентная булка R2-D3', price: 20, count: 2 },
-    { _id: '2', name: 'Филе Люминесцентного тетраодонтимформа традиционный галактический', price: 300, count: 1 },
-    { _id: '3', name: 'Соус традиционный галактический', price: 123, count: 1 },
-    { _id: '4', name: 'Филе Люминесцентного тетраодонтимформа', price: 300, count: 1 },
-    { _id: '5', name: 'Соус традиционный галактический', price: 123, count: 1 },
-    { _id: '6', name: 'Плоды фалленианского дерева', price: 450, count: 1 },
-    { _id: '7', name: 'Филе Люминесцентного тетраодонтимформа', price: 300, count: 1 },
-    { _id: '8', name: 'Плоды фалленианского дерева', price: 450, count: 1 }
-]
-
 export const OrderDetails: FC = () => {
     const params = useParams()
     const { setModalTitle } = useModalTitle()
 
-    const item = feed.orders.find(order => order._id === params.id)
+    const item = useAppSelector(store => store.socket.orders?.find(item => item._id === params.id) || null)
 
     useEffect(() => {
         item && setModalTitle(`#${item.number}`)
     }, [item, setModalTitle])
 
-    if (! item) return <Navigate to='/404' />
+    const ingredientsMap = useAppSelector(getIngredientsMap)
+
+    if (! item) return null
+
+    const { totalPrice, ingredients } = item.ingredients.reduce((acc, _id) => {
+        acc.totalPrice += ingredientsMap[_id].price
+        const existingIngredient = acc.ingredients.find(item => item._id === _id)
+        if (existingIngredient) {
+            existingIngredient.count ++
+        } else {
+            acc.ingredients.push({
+                _id,
+                name: ingredientsMap[_id].name,
+                price: ingredientsMap[_id].price,
+                count: 1
+            })
+        }
+        return acc
+    }, { totalPrice: 0, ingredients: [] } as {totalPrice: number, ingredients: TIngredient[]})
 
     return (
         <div className={styles.body}>
-            <p className='text text_type_main-medium mt-10 mb-3'>{item.status}</p>
+            <p className='text text_type_main-medium mt-10 mb-3'>{item.name}</p>
             <OrderStatus status={item.status} />
             <p className='text text_type_main-medium mt-15 mb-6'>Состав:</p>
             <div className={cn(styles.table, 'custom-scroll pr-6')}>
@@ -47,7 +55,9 @@ export const OrderDetails: FC = () => {
                     <div key={item._id} className={styles.row}>
                         <div className={styles.item}>
                             <div className={styles.gradient}>
-                                <div className={styles.thumb}></div>
+                                <div className={styles.thumb}>
+                                    <img src={ingredientsMap[item._id].image_mobile} alt={item.name} />
+                                </div>
                             </div>
                             <p className={cn(styles.name, 'text text_type_main-default')}>{item.name}</p>
                         </div>
@@ -60,7 +70,7 @@ export const OrderDetails: FC = () => {
             <div className={cn(styles.footer, 'mt-10 mb-10')}>
                 <FormattedDate className='text_type_main-default text_color_inactive' date={new Date(item.createdAt)}/>
                 <p className={cn(styles.price, 'text text_type_digits-default')}>
-                    {123} <CurrencyIcon type="primary"/>
+                    {totalPrice} <CurrencyIcon type="primary"/>
                 </p>
             </div>
         </div>

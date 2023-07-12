@@ -2,6 +2,8 @@ import cookies from 'js-cookie'
 import { ECookie } from './types'
 
 export const baseUrl = 'https://norma.nomoreparties.space/api'
+export const socketUrlOrdersAll = 'wss://norma.nomoreparties.space/orders/all'
+export const socketUrlOrders = 'wss://norma.nomoreparties.space/orders'
 
 const checkResponse = async (response: Response) => {
     if (response.ok) {

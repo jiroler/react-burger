@@ -9,6 +9,11 @@
     justify-content: space-between;
 }
 
+.thumbs {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
 .thumb {
     position: absolute;
     background: #131316;
@@ -19,8 +24,15 @@
     left: 2px;
 }
 
+.thumb > img {
+    position: absolute;
+    height: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 .gradient {
-    float: right;
     position: relative;
     border-radius: 100px;
     width: 64px;

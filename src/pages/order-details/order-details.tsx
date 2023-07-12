@@ -2,9 +2,32 @@ import styles from './order-details.module.css'
 import cn from 'classnames'
 import { OrderDetails } from '../../components/order-details/order-details'
 import { ModalContext, useModalTitle } from '../../hooks/use-modal-title'
+import { useAppDispatch, useAppSelector } from '../../hooks'
+import { useEffect } from 'react'
+import { getIngredients } from '../../services/slices/ingredients'
+import { connectionClose, connectionStart } from '../../services/slices/socket'
+import { socketUrlOrdersAll } from '../../utils/api'
+import Preloader from '../../components/preloader/preloader'
 
 export const OrderDetailsPage = () => {
     const { contextValue, title } = useModalTitle()
+    const dispatch = useAppDispatch()
+
+    const { isConnecting, error: socketError } = useAppSelector(store => store.socket)
+    const { isPending, error: fetchError } = useAppSelector(store => store.ingredients)
+
+    useEffect(() => {
+        dispatch(getIngredients())
+        dispatch(connectionStart({ url: socketUrlOrdersAll }))
+
+        return () => {
+            dispatch(connectionClose())
+        }
+    }, [dispatch])
+
+    if (isConnecting || isPending) return (<Preloader/>)
+
+    if (socketError || fetchError) return (<h1 className={cn('text text_type_main-large mt-10 error center')}>{socketError || fetchError}</h1>)
 
     return (
         <ModalContext.Provider value={contextValue}>

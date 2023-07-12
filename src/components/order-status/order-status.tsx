@@ -1,27 +1,21 @@
 import { FC } from 'react'
 import cn from 'classnames'
-
-enum EStatus {
-    done = 'done',
-    created = 'created',
-    inprogress = 'inprogress',
-    cancelled = 'cancelled'
-}
+import { EOrderStatus } from '../../utils/types'
 
 type TProps = {
-    status: string, //EStatus
+    status: EOrderStatus,
     className?: string
 }
 
-const configs: {[key in EStatus] : {text: string, className?: string}} = {
-    [EStatus.done]: { text: 'Выполнен' },
-    [EStatus.created]: { text: 'Создан' },
-    [EStatus.inprogress]: { text: 'Готовится', className: 'text_color_success' },
-    [EStatus.cancelled]: { text: 'Отменен', className: 'text_color_error' }
+const configs: {[key in EOrderStatus] : {text: string, className?: string}} = {
+    [EOrderStatus.done]: { text: 'Выполнен', className: 'text_color_success' },
+    [EOrderStatus.created]: { text: 'Создан' },
+    [EOrderStatus.pending]: { text: 'Готовится' },
+    [EOrderStatus.cancelled]: { text: 'Отменен', className: 'text_color_error' }
 }
 
 export const OrderStatus: FC<TProps> = ({ status, className }) => {
-    const config = configs[status as EStatus]
+    const config = configs[status]
     if (! config) return null
 
     return (
