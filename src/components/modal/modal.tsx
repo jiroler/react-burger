@@ -4,6 +4,7 @@ import cn from 'classnames'
 import ModalOverlay from '../modal-overlay/modal-overlay'
 import { createPortal } from 'react-dom'
 import { FC, PropsWithChildren, useEffect } from 'react'
+import { ModalContext, useModalTitle } from '../../hooks/use-modal-title'
 
 type TProps = PropsWithChildren<{
     handleClose: () => void,
@@ -23,14 +24,19 @@ const Modal: FC<TProps> = ({ title, handleClose, children }) => {
         }
     }, [handleClose])
 
+    const { contextValue, title: contextTitle } = useModalTitle()
+    const modalTitle = contextTitle || title
+
     return createPortal(
         <>
-            <ModalOverlay handleClick={handleClose}/>
-            <div className={cn(styles.modal, 'pl-10 pr-10')}>
-                {title && <p className={cn(styles.title, 'text text_type_main-large mt-10')}>{title}</p>}
-                <CloseIcon type="primary" onClick={handleClose}/>
-                {children}
-            </div>
+            <ModalContext.Provider value={contextValue}>
+                <ModalOverlay handleClick={handleClose}/>
+                <div className={cn(styles.modal, 'pl-10 pr-10')}>
+                    {modalTitle && <p className={cn(styles.title, 'text text_type_main-large mt-10')}>{modalTitle}</p>}
+                    <CloseIcon type="primary" onClick={handleClose}/>
+                    {children}
+                </div>
+            </ModalContext.Provider>
         </>,
         document.getElementById('modals')!
     )

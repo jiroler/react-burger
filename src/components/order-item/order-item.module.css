@@ -1,0 +1,61 @@
+.item {
+    background-color: #1C1C21;
+    border-radius: 40px;
+    cursor: pointer;
+}
+
+.between {
+    display: flex;
+    justify-content: space-between;
+}
+
+.thumbs {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.thumb {
+    position: absolute;
+    background: #131316;
+    border-radius: 100px;
+    width: 60px;
+    height: 60px;
+    top: 2px;
+    left: 2px;
+}
+
+.thumb > img {
+    position: absolute;
+    height: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.gradient {
+    position: relative;
+    border-radius: 100px;
+    width: 64px;
+    height: 64px;
+    margin-right: -16px;
+    background: linear-gradient(45deg, #AB1AB2, #4C4CFF);
+}
+
+.more {
+    position: absolute;
+    border-radius: 100px;
+    width: 60px;
+    height: 60px;
+    top: 2px;
+    left: 2px;
+    background-color: rgba(28, 28, 33, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.price {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}

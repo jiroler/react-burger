@@ -21,12 +21,16 @@ code {
     align-items: center;
 }
 
+.text {
+    color: #F2F2F3;
+}
+
 .error {
     color: red;
 }
 
-.text {
-    color: #F2F2F3;
+.center {
+    text-align: center;
 }
 
 a {

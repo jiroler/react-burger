@@ -1,6 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit'
+/* eslint-disable camelcase */
+import { createSelector, createSlice } from '@reduxjs/toolkit'
 import { request } from '../../utils/api'
-import { TAppDispatch } from '../store'
+import { TAppDispatch, TRootState } from '../store'
 import { TIngredient } from '../../utils/types'
 
 const ingredientsSlice = createSlice({
@@ -40,5 +41,21 @@ export const getIngredients = () => async (dispatch: TAppDispatch) => {
         dispatch(getIngredientsError({ message }))
     }
 }
+
+type TIngredientsMap = {
+    [key: string]: Pick<TIngredient, 'name' | 'image_mobile' | 'price'>
+}
+
+export const getIngredientsMap = createSelector(
+    (store: TRootState) => store.ingredients.items,
+    (ingredients) => ingredients.reduce((acc, item) => {
+        acc[item._id] = {
+            name: item.name,
+            image_mobile: item.image_mobile,
+            price: item.price
+        }
+        return acc
+    }, {} as TIngredientsMap)
+)
 
 export default ingredientsSlice.reducer

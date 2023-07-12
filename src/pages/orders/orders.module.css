@@ -1,0 +1,8 @@
+.items {
+    display: flex;
+    gap: 16px;
+    flex-direction: column;
+    overflow-y: overlay;
+    max-height: 720px;
+    width: 860px;
+}
