@@ -2,6 +2,8 @@
 import type { Middleware, MiddlewareAPI } from 'redux'
 import { TAppDispatch, TRootState } from '../store'
 import { connectionClose, connectionError, connectionStart, connectionSuccess, getMessage, sendMessage } from '../slices/socket'
+import cookies from 'js-cookie'
+import { ECookie } from '../../utils/types'
 
 export const socketMiddleware = (): Middleware => {
     return ({ dispatch }: MiddlewareAPI<TAppDispatch, TRootState>) => {
@@ -10,7 +12,8 @@ export const socketMiddleware = (): Middleware => {
         return next => (action: {type: string}) => {
             if (action.type === connectionStart.type) {
                 const { payload } = action as ReturnType<typeof connectionStart>
-                socket = new WebSocket(payload.url)
+                const tokenParam = cookies.get(ECookie.accessToken) ? `?token=${cookies.get(ECookie.accessToken)?.replace('Bearer ', '')}` : ''
+                socket = new WebSocket(`${payload.url}${tokenParam}`)
             }
 
             if (socket) {

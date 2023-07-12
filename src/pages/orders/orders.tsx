@@ -9,15 +9,18 @@ import { connectionClose, connectionStart } from '../../services/slices/socket'
 import { socketUrlOrders } from '../../utils/api'
 import Preloader from '../../components/preloader/preloader'
 import { TOrder } from '../../utils/types'
+import { getIngredients } from '../../services/slices/ingredients'
 
 const OrdersPage = () => {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const location = useLocation()
 
-    const { orders, isConnecting, isConnected, error } = useAppSelector(store => store.socket)
+    const { orders, isConnecting, isConnected, error: socketError } = useAppSelector(store => store.socket)
+    const { isPending, error: fetchError } = useAppSelector(store => store.ingredients)
 
     useEffect(() => {
+        dispatch(getIngredients())
         dispatch(connectionStart({ url: socketUrlOrders }))
 
         return () => {
@@ -34,9 +37,8 @@ const OrdersPage = () => {
         setHint('В этом разделе вы можете просмотреть свою историю заказов')
     }, [setHint])
 
-    if (isConnecting) return <Preloader/>
-
-    if (error) return <h1 className={cn('text text_type_main-large mt-10 error center')}>{error}</h1>
+    if (isConnecting || isPending) return (<Preloader/>)
+    if (socketError || fetchError) return (<h1 className={cn('text text_type_main-large mt-10 error center')}>{socketError || fetchError}</h1>)
 
     if (isConnected && orders.length) {
         return (

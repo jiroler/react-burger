@@ -29,7 +29,7 @@ const App = () => {
                     <Route path="" element={<ProfilePage/>}/>
                     <Route path="orders" element={<OrdersPage/>}/>
                 </Route>
-                <Route path="/profile/orders/:id" element={<ProtectedRouteElement element={<OrderDetailsPage/>}/>}/>
+                <Route path="/profile/orders/:id" element={<ProtectedRouteElement element={<OrderDetailsPage onlyCurrentUser/>}/>}/>
 
                 <Route path="/login" element={<ProtectedRouteElement element={<LoginPage/>} reverse/>}/>
                 <Route path="/register" element={<ProtectedRouteElement element={<RegisterPage/>} reverse/>}/>

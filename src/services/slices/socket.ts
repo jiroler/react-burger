@@ -41,7 +41,7 @@ const socket = createSlice({
         getMessage: (state, action: PayloadAction<{data: TSocketData}>) => {
             const data = action.payload.data
             if (data.success) {
-                state.orders = data.orders!
+                state.orders = data.orders!.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                 state.total = data.total!
                 state.totalToday = data.totalToday!
             } else {

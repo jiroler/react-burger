@@ -3,13 +3,17 @@ import cn from 'classnames'
 import { OrderDetails } from '../../components/order-details/order-details'
 import { ModalContext, useModalTitle } from '../../hooks/use-modal-title'
 import { useAppDispatch, useAppSelector } from '../../hooks'
-import { useEffect } from 'react'
+import { FC, useEffect } from 'react'
 import { getIngredients } from '../../services/slices/ingredients'
 import { connectionClose, connectionStart } from '../../services/slices/socket'
-import { socketUrlOrdersAll } from '../../utils/api'
+import { socketUrlOrders, socketUrlOrdersAll } from '../../utils/api'
 import Preloader from '../../components/preloader/preloader'
 
-export const OrderDetailsPage = () => {
+type TProps = {
+    onlyCurrentUser?: boolean
+}
+
+export const OrderDetailsPage: FC<TProps> = ({ onlyCurrentUser }) => {
     const { contextValue, title } = useModalTitle()
     const dispatch = useAppDispatch()
 
@@ -18,12 +22,12 @@ export const OrderDetailsPage = () => {
 
     useEffect(() => {
         dispatch(getIngredients())
-        dispatch(connectionStart({ url: socketUrlOrdersAll }))
+        dispatch(connectionStart({ url: onlyCurrentUser ? socketUrlOrders : socketUrlOrdersAll }))
 
         return () => {
             dispatch(connectionClose())
         }
-    }, [dispatch])
+    }, [dispatch, onlyCurrentUser])
 
     if (isConnecting || isPending) return (<Preloader/>)
 
