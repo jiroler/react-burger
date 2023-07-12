@@ -42,7 +42,8 @@ export type TOrder = {
 
 export type TSocketData = {
     success: boolean;
-    orders: TOrder[];
-    total: number;
-    totalToday: number;
+    message?: string;
+    orders?: TOrder[];
+    total?: number;
+    totalToday?: number;
 }

@@ -40,9 +40,13 @@ const socket = createSlice({
         },
         getMessage: (state, action: PayloadAction<{data: TSocketData}>) => {
             const data = action.payload.data
-            state.orders = data.orders
-            state.total = data.total
-            state.totalToday = data.totalToday
+            if (data.success) {
+                state.orders = data.orders!
+                state.total = data.total!
+                state.totalToday = data.totalToday!
+            } else {
+                state.error = data.message!
+            }
         },
         sendMessage: (_state, _action: PayloadAction<{data: any[]}>) => {}
     }

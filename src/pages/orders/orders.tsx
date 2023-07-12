@@ -6,7 +6,7 @@ import { OrderItem } from '../../components/order-item/order-item'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { connectionClose, connectionStart } from '../../services/slices/socket'
-import { socketUrlOrdersAll } from '../../utils/api'
+import { socketUrlOrders } from '../../utils/api'
 import Preloader from '../../components/preloader/preloader'
 import { TOrder } from '../../utils/types'
 
@@ -18,7 +18,7 @@ const OrdersPage = () => {
     const { orders, isConnecting, isConnected, error } = useAppSelector(store => store.socket)
 
     useEffect(() => {
-        dispatch(connectionStart({ url: socketUrlOrdersAll }))
+        dispatch(connectionStart({ url: socketUrlOrders }))
 
         return () => {
             dispatch(connectionClose())
