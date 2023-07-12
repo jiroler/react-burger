@@ -22,13 +22,13 @@ export const FeedPage = () => {
         return store.socket.orders
             .filter(item => item.status === EOrderStatus.done)
             .map(item => item.number)
-            .slice(0, 10)
+            .slice(0, 20)
     })
     const numbersPending = useAppSelector(store => {
         return store.socket.orders
             .filter(item => item.status === EOrderStatus.pending || item.status === EOrderStatus.created)
             .map(item => item.number)
-            .slice(0, 10)
+            .slice(0, 20)
     })
 
     useEffect(() => {

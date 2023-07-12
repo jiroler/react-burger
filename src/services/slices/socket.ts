@@ -48,7 +48,7 @@ const socket = createSlice({
                 state.error = data.message!
             }
         },
-        sendMessage: (_state, _action: PayloadAction<{data: any[]}>) => {}
+        sendMessage: (_state, _action: PayloadAction<{data: any}>) => {}
     }
 })
 

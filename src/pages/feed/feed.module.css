@@ -34,6 +34,6 @@
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    max-height: 160px;
+    max-height: 320px;
     gap: 8px 36px;
 }
