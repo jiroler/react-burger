@@ -22,3 +22,28 @@ export enum ECookie {
     refreshToken = 'refreshToken',
     accessToken = 'accessToken'
 }
+
+export enum EOrderStatus {
+    done = 'done',
+    created = 'created',
+    pending = 'pending',
+    cancelled = 'cancelled'
+}
+
+export type TOrder = {
+    _id: string;
+    ingredients: string[];
+    status: EOrderStatus;
+    name: string;
+    createdAt: string;
+    updatedAt: string;
+    number: number;
+}
+
+export type TSocketData = {
+    success: boolean;
+    message?: string;
+    orders?: TOrder[];
+    total?: number;
+    totalToday?: number;
+}

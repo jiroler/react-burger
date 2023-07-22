@@ -5,6 +5,7 @@ import { logout } from '../../services/slices/auth'
 import Preloader from '../../components/preloader/preloader'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { SyntheticEvent } from 'react'
+import { useProfileHint } from '../../hooks/use-profile-hint'
 
 // eslint-disable-next-line camelcase
 const setActiveLink = ({ isActive }: { isActive: boolean }) => cn('text', { text_color_inactive: ! isActive })
@@ -14,6 +15,8 @@ const ProfileRootPage = () => {
     const navigate = useNavigate()
 
     const { isLogoutPending, logoutError } = useAppSelector(store => store.auth)
+
+    const { hint, contextValue } = useProfileHint()
 
     const handleLogout = (event: SyntheticEvent) => {
         event.preventDefault()
@@ -37,11 +40,11 @@ const ProfileRootPage = () => {
                 {logoutError && <p className="text_type_main-default error">{logoutError}</p>}
 
                 <p className="text text_type_main-default mt-20 mb-20 text_color_inactive">
-                    В этом разделе вы можете изменить свои персональные данные
+                    {hint}
                 </p>
             </section>
             <section>
-                <Outlet/>
+                <Outlet context={contextValue}/>
             </section>
         </main>
     )
