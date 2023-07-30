@@ -1,7 +1,7 @@
 
 import type { Middleware, MiddlewareAPI } from 'redux'
 import { TAppDispatch, TRootState } from '../store'
-import { connectionClose, connectionError, connectionStart, connectionSuccess, getMessage, sendMessage } from '../slices/socket'
+import { connectionClose, connectionError, connectionStart, connectionSuccess, getMessage, sendMessage } from '../slices/socket/socket'
 import cookies from 'js-cookie'
 import { ECookie } from '../../utils/types'
 

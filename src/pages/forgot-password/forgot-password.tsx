@@ -2,7 +2,7 @@ import { EmailInput } from '@ya.praktikum/react-developer-burger-ui-components'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import ButtonWithPending from '../../components/button-with-pending/button-with-pending'
 import useFormData from '../../hooks/use-form-data'
-import { forgot } from '../../services/slices/auth'
+import { forgot } from '../../services/slices/auth/auth'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 
 type TFormData = {

@@ -2,7 +2,7 @@ import { FC, memo } from 'react'
 import styles from './constructor-item.module.css'
 import cn from 'classnames'
 import { ConstructorElement, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components'
-import { moveComponent, removeComponentFromConstructor } from '../../../services/slices/burger-constructor'
+import { moveComponent, removeComponentFromConstructor } from '../../../services/slices/burger-constructor/burger-constructor'
 import { useDrag, useDrop } from 'react-dnd'
 import { TConstructorIngredient } from '../../../utils/types'
 import { useAppDispatch } from '../../../hooks'
@@ -32,7 +32,7 @@ const ConstructorItem: FC<TProps> = memo(({ type, isLocked, item, originalIndex,
     // Перетаскиваемый ингредиент
     const [{ isDragging }, dragRef] = useDrag(() => ({
         type: 'component',
-        item: { uuid: item.uuid, originalIndex },
+        item: { uuid: item.uuid, originalIndex: originalIndex! },
         collect: (monitor) => ({
             isDragging: monitor.isDragging()
         }),

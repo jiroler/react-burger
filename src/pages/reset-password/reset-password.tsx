@@ -2,7 +2,7 @@ import { Input, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-co
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import ButtonWithPending from '../../components/button-with-pending/button-with-pending'
 import useFormData from '../../hooks/use-form-data'
-import { reset } from '../../services/slices/auth'
+import { reset } from '../../services/slices/auth/auth'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 
 type TFormData = {

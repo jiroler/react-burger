@@ -3,12 +3,12 @@ import { OrderItem } from '../../components/order-item/order-item'
 import styles from './feed.module.css'
 import cn from 'classnames'
 import { useCallback, useEffect } from 'react'
-import { connectionClose, connectionStart } from '../../services/slices/socket'
+import { connectionClose, connectionStart } from '../../services/slices/socket/socket'
 import { socketUrlOrdersAll } from '../../utils/api'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { EOrderStatus, TOrder } from '../../utils/types'
 import Preloader from '../../components/preloader/preloader'
-import { getIngredients } from '../../services/slices/ingredients'
+import { getIngredients } from '../../services/slices/ingredients/ingredients'
 
 export const FeedPage = () => {
     const dispatch = useAppDispatch()

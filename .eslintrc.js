@@ -2,11 +2,18 @@ module.exports = {
     globals: {
         NodeJS: 'readonly'
     },
+    plugins: [
+        'cypress'
+    ],
     extends: [
         'eslint:recommended',
         'react-app',
-        'react-app/jest'
+        'react-app/jest',
+        'plugin:cypress/recommended'
     ],
+    env: {
+        'cypress/globals': true
+    },
     rules: {
         'accessor-pairs': 'error',
         'array-bracket-spacing': ['error', 'never'],

@@ -4,7 +4,7 @@ import cn from 'classnames'
 import { CurrencyIcon, FormattedDate } from '@ya.praktikum/react-developer-burger-ui-components'
 import { OrderStatus } from '../order-status/order-status'
 import { TOrder } from '../../utils/types'
-import { getIngredientsMap } from '../../services/slices/ingredients'
+import { getIngredientsMap } from '../../services/slices/ingredients/ingredients'
 import { useAppSelector } from '../../hooks'
 
 type TProps = {

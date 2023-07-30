@@ -1,7 +1,7 @@
 import styles from './profile-root.module.css'
 import cn from 'classnames'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { logout } from '../../services/slices/auth'
+import { logout } from '../../services/slices/auth/auth'
 import Preloader from '../../components/preloader/preloader'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { SyntheticEvent } from 'react'

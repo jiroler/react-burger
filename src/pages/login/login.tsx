@@ -1,6 +1,6 @@
 import { EmailInput, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { login } from '../../services/slices/auth'
+import { login } from '../../services/slices/auth/auth'
 import ButtonWithPending from '../../components/button-with-pending/button-with-pending'
 import useFormData from '../../hooks/use-form-data'
 import { useAppDispatch, useAppSelector } from '../../hooks'

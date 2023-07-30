@@ -1,4 +1,4 @@
-import { auth } from '../../services/slices/auth'
+import { auth } from '../../services/slices/auth/auth'
 import { FC, ReactElement, useEffect } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import Preloader from '../../components/preloader/preloader'
