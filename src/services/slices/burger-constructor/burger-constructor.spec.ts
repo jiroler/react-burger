@@ -2,6 +2,10 @@ import { fakeBun, fakeConstructorBun, fakeConstructorComponent1, fakeConstructor
 import burgerConstructorSlice, { addIngredientToConstructor, clearConstructor, moveComponent, removeComponentFromConstructor } from './burger-constructor'
 
 describe('burgerConstructorSlice reducer', () => {
+    it('should be correct initial state', () => {
+        expect(burgerConstructorSlice.getInitialState()).toEqual({ bun: null, components: [] })
+    })
+
     it('should handle addIngredientToConstructor for bun', () => {
         const action = addIngredientToConstructor({ item: fakeBun, uuid: 'bun1' })
         const newState = burgerConstructorSlice.reducer(undefined, action)

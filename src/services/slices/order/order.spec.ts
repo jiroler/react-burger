@@ -11,6 +11,10 @@ const mockStore = configureMockStore<Pick<TRootState, 'order'>, TAppDispatch>(mi
 fetchMock.enableMocks()
 
 describe('orderSlice reducer', () => {
+    it('should be correct initial state', () => {
+        expect(orderSlice.getInitialState()).toEqual({ number: null, isPending: false, error: null })
+    })
+
     it('should handle makeOrderRequest', () => {
         const nextState = orderSlice.reducer(undefined, makeOrderRequest())
         expect(nextState).toEqual({ number: null, isPending: true, error: null })

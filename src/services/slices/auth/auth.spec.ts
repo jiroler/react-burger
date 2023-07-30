@@ -10,6 +10,10 @@ const mockStore = configureMockStore<Pick<TRootState, 'auth'>, TAppDispatch>(mid
 fetchMock.enableMocks()
 
 describe('authSlice reducer', () => {
+    it('should be correct initial state', () => {
+        expect(authSlice.getInitialState()).toEqual({ user: null, isLoginPending: false, loginError: null, isRegisterPending: false, registerError: null, isForgotPending: false, forgotError: null, isResetPending: false, resetError: null, isUpdatePending: false, updateError: null, isAuthChecked: false, isAuthPending: false, authError: null, isLogoutPending: false, logoutError: null })
+    })
+
     it('should handle loginRequest', () => {
         const action = loginRequest()
         const newState = authSlice.reducer(undefined, action)

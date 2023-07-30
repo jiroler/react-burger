@@ -11,6 +11,10 @@ const mockStore = configureMockStore<Pick<TRootState, 'ingredients'>, TAppDispat
 fetchMock.enableMocks()
 
 describe('ingredientsSlice reducer', () => {
+    it('should be correct initial state', () => {
+        expect(ingredientsSlice.getInitialState()).toEqual({ items: [], isPending: false, error: null })
+    })
+
     it('should handle getIngredientsRequest', () => {
         const nextState = ingredientsSlice.reducer(undefined, getIngredientsRequest())
         expect(nextState).toEqual({ items: [], isPending: true, error: null })
