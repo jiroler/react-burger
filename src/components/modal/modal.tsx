@@ -33,7 +33,7 @@ const Modal: FC<TProps> = ({ title, handleClose, children }) => {
                 <ModalOverlay handleClick={handleClose}/>
                 <div className={cn(styles.modal, 'pl-10 pr-10')}>
                     {modalTitle && <p className={cn(styles.title, 'text text_type_main-large mt-10')}>{modalTitle}</p>}
-                    <CloseIcon type="primary" onClick={handleClose}/>
+                    <span className={styles.close}><CloseIcon type="primary" onClick={handleClose}/></span>
                     {children}
                 </div>
             </ModalContext.Provider>
