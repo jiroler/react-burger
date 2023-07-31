@@ -2,6 +2,10 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Demo version
+
+[https://jiroler.github.io/react-burger/#/](https://jiroler.github.io/react-burger/#/)
+
 ## Available Scripts
 
 In the project directory, you can run:

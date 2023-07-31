@@ -1,34 +1,42 @@
 /* eslint-disable camelcase */
-import { createSelector, createSlice } from '@reduxjs/toolkit'
-import { request } from '../../utils/api'
-import { TAppDispatch, TRootState } from '../store'
-import { TIngredient } from '../../utils/types'
+import { PayloadAction, createSelector, createSlice } from '@reduxjs/toolkit'
+import { request } from '../../../utils/api'
+import { TAppDispatch, TRootState } from '../../store'
+import { TIngredient } from '../../../utils/types'
+
+type TIngredients = {
+    items: TIngredient[],
+    isPending: boolean,
+    error: string | null
+}
+
+const initialState: TIngredients = {
+    items: [],
+    isPending: false,
+    error: null
+}
 
 const ingredientsSlice = createSlice({
     name: 'ingredients',
-    initialState: {
-        items: [] as TIngredient[],
-        isPending: false,
-        error: null
-    },
+    initialState,
     reducers: {
         getIngredientsRequest: (state) => {
             state.isPending = true
             state.error = null
         },
-        getIngredientsSuccess: (state, action) => {
+        getIngredientsSuccess: (state, action: PayloadAction<{items: TIngredient[]}>) => {
             state.items = action.payload.items
             state.isPending = false
             state.error = null
         },
-        getIngredientsError: (state, action) => {
+        getIngredientsError: (state, action: PayloadAction<{message: string}>) => {
             state.isPending = false
             state.error = action.payload.message
         }
     }
 })
 
-const { getIngredientsRequest, getIngredientsSuccess, getIngredientsError } = ingredientsSlice.actions
+export const { getIngredientsRequest, getIngredientsSuccess, getIngredientsError } = ingredientsSlice.actions
 
 export const getIngredients = () => async (dispatch: TAppDispatch) => {
     try {
@@ -58,4 +66,4 @@ export const getIngredientsMap = createSelector(
     }, {} as TIngredientsMap)
 )
 
-export default ingredientsSlice.reducer
+export default ingredientsSlice

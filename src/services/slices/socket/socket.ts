@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { TOrder, TSocketData } from '../../utils/types'
+import { TOrder, TSocketData } from '../../../utils/types'
 
 type TSocket = {
     isConnected: boolean,
@@ -19,7 +19,7 @@ const initialState: TSocket = {
     error: null
 }
 
-const socket = createSlice({
+const socketSlice = createSlice({
     name: 'socket',
     initialState,
     reducers: {
@@ -34,7 +34,7 @@ const socket = createSlice({
         connectionClose: (state) => {
             state.isConnected = false
         },
-        connectionError: (state, action) => {
+        connectionError: (state, action: PayloadAction<Event>) => {
             state.isConnected = false
             state.error = String(action.payload)
         },
@@ -52,6 +52,6 @@ const socket = createSlice({
     }
 })
 
-export const { connectionStart, connectionSuccess, connectionClose, connectionError, getMessage, sendMessage } = socket.actions
+export const { connectionStart, connectionSuccess, connectionClose, connectionError, getMessage, sendMessage } = socketSlice.actions
 
-export default socket.reducer
+export default socketSlice

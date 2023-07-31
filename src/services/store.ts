@@ -1,9 +1,9 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import ingredients from './slices/ingredients'
-import burgerConstructor from './slices/burger-constructor'
-import order from './slices/order'
-import auth from './slices/auth'
-import socket from './slices/socket'
+import ingredientsSlice from './slices/ingredients/ingredients'
+import burgerConstructorSlice from './slices/burger-constructor/burger-constructor'
+import orderSlice from './slices/order/order'
+import authSlice from './slices/auth/auth'
+import socketSlice from './slices/socket/socket'
 import storage from 'redux-persist/lib/storage'
 import { persistReducer } from 'redux-persist'
 import { socketMiddleware } from './middlewares/socketMiddleware'
@@ -15,11 +15,11 @@ const persistConfig = {
 }
 
 const persistedReducer = persistReducer(persistConfig, combineReducers({
-    auth,
-    ingredients,
-    burgerConstructor,
-    order,
-    socket
+    auth: authSlice.reducer,
+    ingredients: ingredientsSlice.reducer,
+    burgerConstructor: burgerConstructorSlice.reducer,
+    order: orderSlice.reducer,
+    socket: socketSlice.reducer
 }))
 
 export const store = configureStore({

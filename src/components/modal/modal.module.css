@@ -12,7 +12,7 @@
     box-sizing: border-box;
 }
 
-.modal > svg {
+.close {
     display: block;
     width: 24px;
     height: 24px;
@@ -27,3 +27,4 @@
     display: flex;
     align-items: center;
 }
+

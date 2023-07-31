@@ -1,51 +1,63 @@
-import { createSlice } from '@reduxjs/toolkit'
-import { request, requestWithRefresh } from '../../utils/api'
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { request, requestWithRefresh } from '../../../utils/api'
 import cookies from 'js-cookie'
-import { ECookie } from '../../utils/types'
-import { TAppDispatch, TRootState } from '../store'
+import { ECookie } from '../../../utils/types'
+import { TAppDispatch, TRootState } from '../../store'
 
 type TUser = {
-    name: string,
-    email: string
-} | null
+    user: {
+        name: string,
+        email: string
+    } | null,
+    isLoginPending: boolean,
+    loginError: string | null,
+    isRegisterPending: boolean,
+    registerError: string | null,
+    isForgotPending: boolean,
+    forgotError: string | null,
+    isResetPending: boolean,
+    resetError: string | null,
+    isUpdatePending: boolean,
+    updateError: string | null,
+    isAuthChecked: boolean,
+    isAuthPending: boolean,
+    authError: string | null,
+    isLogoutPending: boolean,
+    logoutError: string | null
+}
+
+const initialState: TUser = {
+    user: null,
+    isLoginPending: false,
+    loginError: null,
+    isRegisterPending: false,
+    registerError: null,
+    isForgotPending: false,
+    forgotError: null,
+    isResetPending: false,
+    resetError: null,
+    isUpdatePending: false,
+    updateError: null,
+    isAuthChecked: false,
+    isAuthPending: false,
+    authError: null,
+    isLogoutPending: false,
+    logoutError: null
+}
 
 const authSlice = createSlice({
     name: 'auth',
-    initialState: {
-        user: null as TUser,
-
-        isLoginPending: false,
-        loginError: null,
-
-        isRegisterPending: false,
-        registerError: null,
-
-        isForgotPending: false,
-        forgotError: null,
-
-        isResetPending: false,
-        resetError: null,
-
-        isUpdatePending: false,
-        updateError: null,
-
-        isAuthChecked: false,
-        isAuthPending: false,
-        authError: null,
-
-        isLogoutPending: false,
-        logoutError: null
-    },
+    initialState,
     reducers: {
         loginRequest: (state) => {
             state.isLoginPending = true
             state.loginError = null
         },
-        loginSuccess: (state, action) => {
+        loginSuccess: (state, action: PayloadAction<{user: {name: string, email: string}}>) => {
             state.isLoginPending = false
             state.user = action.payload.user
         },
-        loginError: (state, action) => {
+        loginError: (state, action: PayloadAction<{message: string}>) => {
             state.isLoginPending = false
             state.loginError = action.payload.message
         },
@@ -57,7 +69,7 @@ const authSlice = createSlice({
         registerSuccess: (state) => {
             state.isRegisterPending = false
         },
-        registerError: (state, action) => {
+        registerError: (state, action: PayloadAction<{message: string}>) => {
             state.isRegisterPending = false
             state.registerError = action.payload.message
         },
@@ -69,7 +81,7 @@ const authSlice = createSlice({
         forgotSuccess: (state) => {
             state.isForgotPending = false
         },
-        forgotError: (state, action) => {
+        forgotError: (state, action: PayloadAction<{message: string}>) => {
             state.isForgotPending = false
             state.forgotError = action.payload.message
         },
@@ -81,7 +93,7 @@ const authSlice = createSlice({
         resetSuccess: (state) => {
             state.isResetPending = false
         },
-        resetError: (state, action) => {
+        resetError: (state, action: PayloadAction<{message: string}>) => {
             state.isResetPending = false
             state.resetError = action.payload.message
         },
@@ -90,11 +102,11 @@ const authSlice = createSlice({
             state.isUpdatePending = true
             state.updateError = null
         },
-        updateSuccess: (state, action) => {
+        updateSuccess: (state, action: PayloadAction<{user: {name: string, email: string}}>) => {
             state.isUpdatePending = false
             state.user = action.payload.user
         },
-        updateError: (state, action) => {
+        updateError: (state, action: PayloadAction<{message: string}>) => {
             state.isUpdatePending = false
             state.updateError = action.payload.message
         },
@@ -109,7 +121,7 @@ const authSlice = createSlice({
             state.isAuthPending = false
             state.user = action.payload.user
         },
-        authError: (state, action) => {
+        authError: (state, action: PayloadAction<{message: string}>) => {
             state.isAuthChecked = true
             state.isAuthPending = false
             state.authError = action.payload.message
@@ -124,14 +136,14 @@ const authSlice = createSlice({
             state.isLogoutPending = false
             state.user = null
         },
-        logoutError: (state, action) => {
+        logoutError: (state, action: PayloadAction<{message: string}>) => {
             state.isLogoutPending = false
             state.logoutError = action.payload.message
         }
     }
 })
 
-const {
+export const {
     loginRequest, loginSuccess, loginError,
     registerRequest, registerSuccess, registerError,
     forgotRequest, forgotSuccess, forgotError,
@@ -160,7 +172,7 @@ export const register = ({ formData, onSuccess }: TAnyAuthArgs) => async (dispat
             body: JSON.stringify(formData)
         })
 
-        dispatch(registerSuccess(json))
+        dispatch(registerSuccess())
         cookies.set(ECookie.refreshToken, json.refreshToken)
         cookies.set(ECookie.accessToken, json.accessToken)
 
@@ -186,7 +198,7 @@ export const login = ({ formData, onSuccess }: TAnyAuthArgs) => async (dispatch:
             body: JSON.stringify(formData)
         })
 
-        dispatch(loginSuccess(json))
+        dispatch(loginSuccess({ user: json.user }))
         cookies.set(ECookie.refreshToken, json.refreshToken)
         cookies.set(ECookie.accessToken, json.accessToken)
 
@@ -205,13 +217,13 @@ export const forgot = ({ formData, onSuccess }: TAnyAuthArgs) => async (dispatch
         if (! formData!.email) throw new Error('Введите e-mail')
 
         dispatch(forgotRequest())
-        const json = await request('/password-reset', {
+        await request('/password-reset', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData)
         })
 
-        dispatch(forgotSuccess(json))
+        dispatch(forgotSuccess())
 
         if (typeof onSuccess === 'function') {
             onSuccess()
@@ -229,13 +241,13 @@ export const reset = ({ formData, onSuccess }: TAnyAuthArgs) => async (dispatch:
         if (! formData!.token) throw new Error('Введите код')
 
         dispatch(resetRequest())
-        const json = await request('/password-reset/reset', {
+        await request('/password-reset/reset', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData)
         })
 
-        dispatch(resetSuccess(json))
+        dispatch(resetSuccess())
 
         if (typeof onSuccess === 'function') {
             onSuccess()
@@ -274,7 +286,7 @@ export const auth = () => async (dispatch: TAppDispatch) => {
         dispatch(authRequest())
         const json = await requestWithRefresh('/auth/user')
 
-        dispatch(authSuccess(json))
+        dispatch(authSuccess({ user: json.user }))
 
     } catch (error) {
         const message = (error as Error)?.message || 'Неизвестная ошибка'
@@ -295,7 +307,7 @@ export const update = ({ formData, onSuccess }: TAnyAuthArgs) => async (dispatch
             body: JSON.stringify(formData)
         })
 
-        dispatch(updateSuccess(json))
+        dispatch(updateSuccess({ user: json.user }))
 
         if (typeof onSuccess === 'function') {
             onSuccess()
@@ -306,4 +318,4 @@ export const update = ({ formData, onSuccess }: TAnyAuthArgs) => async (dispatch
     }
 }
 
-export default authSlice.reducer
+export default authSlice

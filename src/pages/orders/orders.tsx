@@ -5,11 +5,11 @@ import cn from 'classnames'
 import { OrderItem } from '../../components/order-item/order-item'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../hooks'
-import { connectionClose, connectionStart } from '../../services/slices/socket'
+import { connectionClose, connectionStart } from '../../services/slices/socket/socket'
 import { socketUrlOrders } from '../../utils/api'
 import Preloader from '../../components/preloader/preloader'
 import { TOrder } from '../../utils/types'
-import { getIngredients } from '../../services/slices/ingredients'
+import { getIngredients } from '../../services/slices/ingredients/ingredients'
 
 const OrdersPage = () => {
     const dispatch = useAppDispatch()

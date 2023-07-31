@@ -5,7 +5,7 @@ import './index.css'
 import reportWebVitals from './reportWebVitals'
 import App from './components/app/app'
 import { Provider } from 'react-redux'
-import { BrowserRouter } from 'react-router-dom'
+import { HashRouter } from 'react-router-dom'
 import { persistStore } from 'redux-persist'
 import { PersistGate } from 'redux-persist/integration/react'
 import { store } from './services/store'
@@ -19,9 +19,9 @@ root.render(
     <React.StrictMode>
         <Provider store={store}>
             <PersistGate persistor={persistor}>
-                <BrowserRouter>
+                <HashRouter>
                     <App />
-                </BrowserRouter>
+                </HashRouter>
             </PersistGate>
         </Provider>
     </React.StrictMode>

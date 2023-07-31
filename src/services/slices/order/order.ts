@@ -1,17 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { clearConstructor } from './burger-constructor'
-import { requestWithToken } from '../../utils/api'
-import { TAppDispatch, TRootState } from '../store'
+import { clearConstructor } from '../burger-constructor/burger-constructor'
+import { requestWithToken } from '../../../utils/api'
+import { TAppDispatch, TRootState } from '../../store'
 
-type TNumber = number | null
+type TOrder = {
+    number: number | null,
+    isPending: boolean,
+    error: string | null
+}
+
+const initialState: TOrder = {
+    number: null,
+    isPending: false,
+    error: null
+}
 
 const orderSlice = createSlice({
     name: 'order',
-    initialState: {
-        number: null as TNumber,
-        isPending: false,
-        error: null
-    },
+    initialState,
     reducers: {
         makeOrderRequest: (state) => {
             state.isPending = true
@@ -29,13 +35,13 @@ const orderSlice = createSlice({
     }
 })
 
-const { makeOrderRequest, makeOrderSuccess, makeOrderError } = orderSlice.actions
+export const { makeOrderRequest, makeOrderSuccess, makeOrderError } = orderSlice.actions
 
 export const makeOrder = ({ ingredients, onSuccess }: { ingredients: string[], onSuccess?: () => void }) => async (dispatch: TAppDispatch, getState: () => TRootState) => {
     try {
         if (getState().order.isPending) return
-        if (getState().burgerConstructor.bun === null) throw new Error('Добавьте булку')
-        if (getState().burgerConstructor.components.length === 0) throw new Error('Добавьте ингредиенты')
+        if (getState().burgerConstructor?.bun === null) throw new Error('Добавьте булку')
+        if (getState().burgerConstructor?.components.length === 0) throw new Error('Добавьте ингредиенты')
 
         dispatch(makeOrderRequest())
         const json = await requestWithToken('/orders', {
@@ -57,4 +63,4 @@ export const makeOrder = ({ ingredients, onSuccess }: { ingredients: string[], o
     }
 }
 
-export default orderSlice.reducer
+export default orderSlice

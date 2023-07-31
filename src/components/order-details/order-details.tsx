@@ -6,7 +6,7 @@ import { CurrencyIcon, FormattedDate } from '@ya.praktikum/react-developer-burge
 import { useParams } from 'react-router-dom'
 import { useModalTitle } from '../../hooks/use-modal-title'
 import { useAppSelector } from '../../hooks'
-import { getIngredientsMap } from '../../services/slices/ingredients'
+import { getIngredientsMap } from '../../services/slices/ingredients/ingredients'
 
 type TIngredient = {
     _id: string,

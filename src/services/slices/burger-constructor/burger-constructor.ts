@@ -1,13 +1,20 @@
 import { PayloadAction, nanoid } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
-import { TConstructorIngredient } from '../../utils/types'
+import { TConstructorIngredient, TIngredient } from '../../../utils/types'
+
+type TBurgerConstructor = {
+    bun: TConstructorIngredient | null,
+    components: TConstructorIngredient[]
+}
+
+const initialState: TBurgerConstructor = {
+    bun: null,
+    components: []
+}
 
 const burgerConstructorSlice = createSlice({
     name: 'burgerConstructor',
-    initialState: {
-        bun: null as TConstructorIngredient | null,
-        components: [] as TConstructorIngredient[]
-    },
+    initialState,
     reducers: {
         addIngredientToConstructor: {
             reducer: (state, action: PayloadAction<{item: TConstructorIngredient}>) => {
@@ -19,18 +26,19 @@ const burgerConstructorSlice = createSlice({
                     state.components.push(item)
                 }
             },
-            prepare: (payload) => {
-                payload.item = {
-                    ...payload.item,
-                    uuid: nanoid()
-                }
-                return { payload }
+            prepare: (payload: {item: TIngredient, uuid?: string}) => {
+                const uniqueItem: TConstructorIngredient =
+                    {
+                        ...payload.item,
+                        uuid: payload.uuid || nanoid()
+                    }
+                return { payload: { item: uniqueItem } }
             }
         },
         removeComponentFromConstructor: (state, action) => {
             state.components = state.components.filter(item => item.uuid !== action.payload.item.uuid)
         },
-        moveComponent: (state, action) => {
+        moveComponent: (state, action: PayloadAction<{uuid: string, index: number}>) => {
             const { uuid, index } = action.payload
             const originalIndex = state.components.findIndex(item => item.uuid === uuid)
             const component = state.components[originalIndex]
@@ -46,4 +54,4 @@ const burgerConstructorSlice = createSlice({
 })
 
 export const { addIngredientToConstructor, removeComponentFromConstructor, moveComponent, clearConstructor } = burgerConstructorSlice.actions
-export default burgerConstructorSlice.reducer
+export default burgerConstructorSlice

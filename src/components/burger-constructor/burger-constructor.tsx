@@ -1,17 +1,15 @@
 import styles from './burger-constructor.module.css'
 import cn from 'classnames'
 import useModal from '../../hooks/use-modal'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import Modal from '../modal/modal'
 import OrderDetails from './order-details/order-details'
 import ConstructorItem from './constructor-item/constructor-item'
 import OrderSummary from './order-summary/order-summary'
-import { makeOrder } from '../../services/slices/order'
+import { makeOrder } from '../../services/slices/order/order'
 import { useDrop } from 'react-dnd'
-import { addIngredientToConstructor } from '../../services/slices/burger-constructor'
-import { auth } from '../../services/slices/auth'
+import { addIngredientToConstructor } from '../../services/slices/burger-constructor/burger-constructor'
 import { useNavigate } from 'react-router-dom'
-import Preloader from '../preloader/preloader'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { TIngredient } from '../../utils/types'
 
@@ -28,11 +26,7 @@ const BurgerConstructor = () => {
         ingredients.push(bun._id)
     }
 
-    const { user, isAuthChecked } = useAppSelector(store => store.auth)
-
-    useEffect(() => {
-        ! isAuthChecked && dispatch(auth())
-    }, [isAuthChecked, dispatch])
+    const { user } = useAppSelector(store => store.auth)
 
     const handleOrder = () => {
         user
@@ -63,8 +57,6 @@ const BurgerConstructor = () => {
     const findIndex = useCallback((uuid: string) => {
         return components.findIndex(item => item.uuid === uuid)
     }, [components])
-
-    if (! isAuthChecked) return <Preloader/>
 
     return (
         <section className='pt-25 pl-4'>

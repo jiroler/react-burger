@@ -1,7 +1,7 @@
 import styles from './ingredient-details-page.module.css'
 import cn from 'classnames'
 import { useEffect } from 'react'
-import { getIngredients } from '../../services/slices/ingredients'
+import { getIngredients } from '../../services/slices/ingredients/ingredients'
 import IngredientDetails from '../../components/burger-ingredients/ingredient-details/ingredient-details'
 import Preloader from '../../components/preloader/preloader'
 import { useAppDispatch, useAppSelector } from '../../hooks'

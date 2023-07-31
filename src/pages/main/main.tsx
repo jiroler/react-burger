@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { getIngredients } from '../../services/slices/ingredients'
+import { getIngredients } from '../../services/slices/ingredients/ingredients'
 import styles from './main.module.css'
 import cn from 'classnames'
 import { DndProvider } from 'react-dnd'

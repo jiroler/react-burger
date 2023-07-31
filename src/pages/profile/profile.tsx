@@ -1,7 +1,7 @@
 import { EmailInput, Input, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components'
 import styles from './profile.module.css'
 import useFormData from '../../hooks/use-form-data'
-import { update } from '../../services/slices/auth'
+import { update } from '../../services/slices/auth/auth'
 import ButtonWithPending from '../../components/button-with-pending/button-with-pending'
 import { useAppDispatch, useAppSelector } from '../../hooks'
 import { useEffect } from 'react'
